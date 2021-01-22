@@ -1,0 +1,78 @@
+<form action="/result" method="POST">
+<p>
+    Syötä auton tiedot:
+</p>
+Merkki:
+<input type="text" name="brand" required>
+<br>
+Malli:
+<input type="text" name="model" required>
+<br>
+Korimalli:
+<input type="radio" id="sedan" name="chassis" value="sedan" checked>
+<label for="sedan">Porrasperä</label>
+<input type="radio" id="estate" name="chassis" value="estate">
+<label for="estate">Farmari</label>
+<input type="radio" id="coupe" name="chassis" value="coupe">
+<label for="coupe">Coupe</label>
+<input type="radio" id="convertible" name="chassis" value="convertible">
+<label for="convertible">Avoauto</label>
+<input type="radio" id="hatchback" name="chassis" value="hatchback">
+<label for="hatchback">Viistoperä</label>
+<br>
+Käyttövoima:
+<input type="radio" id="gasoline" name="fuel" value="gasoline" checked>
+<label for="gasoline">Bensiini</label>
+<input type="radio" id="diesel" name="fuel" value="diesel">
+<label for="diesel">Diesel</label>
+<input type="radio" id="re85" name="fuel" value="re85">
+<label for="gasoline">RE85</label>
+<input type="radio" id="electricity" name="fuel" value="electricity">
+<label for="electricity">Sähkö</label>
+<br>
+Vetotapa:
+<br>
+<input type="radio" id="rear" name="drive" value="rear-wheel-drive" checked>
+<label for="rear-wheel-drive">Takaveto</label>
+<input type="radio" id="front" name="drive" value="front-wheel-drive">
+<label for="front-wheel-drive">Etuveto</label>
+<input type="radio" id="four" name="drive" value="four-wheel-drive">
+<label for="four-wheel-drive">Neliveto</label>
+<br>
+Vaihteisto:
+<input type="radio" id="manual" name="transmission" value="manual-transmission" checked>
+<label for="manual-transmission">Manuaali</label>
+<input type="radio" id="automatic" name="transmission" value="automatic-transmission">
+<label for="automatic-transmission">Automaatti</label>
+<br>
+Vuosimalli:
+<input type="number" name="year" min="1900" max="2021" required>
+<br>
+Hinta:
+<input type="number" name="price" min="1" max="10000000" required>
+(Euroina)
+<br>
+Väri:
+<input type="text" name="color" required>
+<br>
+Moottorin tilavuus:
+<input type="number" name="engine-volume" min="100" max="10000" required>
+(kuutiosenttimetreinä, cm^3)
+<br>
+Teho:
+<input type="number" name="power" min="0" max="2000" required>
+(kilowatteina, kW)
+<br>
+Tieliikennekelpoisuus:
+<input type="radio" id="notlegal" name="legal" value="not-street-legal">
+<label for="not-street-legal">Ei tieliikennekelpoinen</label>
+<input type="radio" id="legal" name="legal" value="street-legal" checked>
+<label for="street-legal">Tieliikennekelpoinen</label>
+<br>
+Lisätiedot:
+<br>
+<textarea name="info" rows="3" cols="50"></textarea>
+<br>
+<input type="submit" value="Lähetä">
+<input type="reset" value="Tyhjennä">
+</form>

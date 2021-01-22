@@ -14,3 +14,7 @@ def index():
 def login():
     return redirect("/")
 
+@app.route("/new")
+def new_car_from():
+    return render_template("car_form.html")
+
