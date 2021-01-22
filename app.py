@@ -1,17 +1,24 @@
 from flask import Flask
 from flask import redirect, render_template, request, session
-from os import getenv
+from os import getenv, urandom
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = getenv("SECRET_KEY")
 
+def create_session_token():
+    return urandom(16).hex()
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/login")
+@app.route("/login", methods=["POST"])
 def login():
+    username = request.form["username"]
+    password = request.form["password"]
+    #TODO: check username and password
+    session["username"] = username
     return redirect("/")
 
 @app.route("/new")
@@ -38,3 +45,12 @@ def car_added():
     transmission=transmission, year=year, price=price,
     color=color, engine=engine, power=power,
     legal=legal, info=info)
+
+@app.route("/logout")
+def logout():
+    del session["username"]
+    return redirect("/")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    return redirect("/")

@@ -1,2 +1,23 @@
-Tervetuloa autonettiin!
+Tervetuloa autonettiin! <br>
 Myytävät autot:
+<hr>
+{% if session.username %}
+<p>Kirjautuneena {{ session.username }}</p>
+Jätä ilmoitus <a href="/new">Tästä</a>
+<br>
+<a href="/logout">Kirjaudu ulos</a>
+{% else %}
+Kirjaudu sisään:
+<hr>
+<form action="/login" method="POST">
+Tunnus: <input type="text" name="username">
+<p>
+    Salasana: <input type="password" name="password">
+</p>
+<p>
+    <input type="submit" value="Kirjaudu">
+</p>
+</form>
+<hr>
+Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
+{% endif %}
