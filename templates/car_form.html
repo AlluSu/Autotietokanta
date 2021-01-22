@@ -31,7 +31,6 @@ Käyttövoima:
 <label for="electricity">Sähkö</label>
 <br>
 Vetotapa:
-<br>
 <input type="radio" id="rear" name="drive" value="rear-wheel-drive" checked>
 <label for="rear-wheel-drive">Takaveto</label>
 <input type="radio" id="front" name="drive" value="front-wheel-drive">
@@ -56,7 +55,7 @@ Väri:
 <input type="text" name="color" required>
 <br>
 Moottorin tilavuus:
-<input type="number" name="engine-volume" min="100" max="10000" required>
+<input type="number" name="engine" min="100" max="10000" required>
 (kuutiosenttimetreinä, cm^3)
 <br>
 Teho:
@@ -64,10 +63,10 @@ Teho:
 (kilowatteina, kW)
 <br>
 Tieliikennekelpoisuus:
-<input type="radio" id="notlegal" name="legal" value="not-street-legal">
-<label for="not-street-legal">Ei tieliikennekelpoinen</label>
-<input type="radio" id="legal" name="legal" value="street-legal" checked>
-<label for="street-legal">Tieliikennekelpoinen</label>
+<input type="radio" id="notlegal" name="legal" value="not-legal">
+<label for="not-legal">Ei tieliikennekelpoinen</label>
+<input type="radio" id="legal" name="legal" value="legal" checked>
+<label for="legal">Tieliikennekelpoinen</label>
 <br>
 Lisätiedot:
 <br>
