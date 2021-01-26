@@ -15,7 +15,7 @@ def create_session_token():
 
 @app.route("/")
 def index():
-    sql = "SELECT brand, model, mileage, year FROM cars"
+    sql = "SELECT id, brand, model, mileage, year FROM cars"
     result = db.session.execute(sql)
     cars = result.fetchall()
     return render_template("index.html", cars=cars)

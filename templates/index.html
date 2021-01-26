@@ -2,10 +2,11 @@ Tervetuloa autonettiin! <br>
 Myytävät autot:
 <hr>
 {% for car in cars %}
-{{ car[0] }}<br>
-{{ car[1] }}<br>
-{{ car[2] }}<br>
-{{ car[3] }}<br>
+Merkki: {{ car[1] }}<br>
+Malli: {{ car[2] }}<br>
+Mittarilukema: {{ car[3] }}<br>
+Vuosimalli: {{ car[4] }}<br>
+<a href="/ad/{{ car[0] }}">Mene ilmoitukseen</a>
 <hr>
 {% endfor %}
 {% if session.username %}
