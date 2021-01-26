@@ -9,23 +9,14 @@ Vuosimalli: {{ car[4] }}<br>
 <a href="/ad/{{ car[0] }}">Mene ilmoitukseen</a>
 <hr>
 {% endfor %}
-{% if session.username %}
+{% if session.user_id %}
 <p>Kirjautuneena {{ session.username }}</p>
+<p>OLET KIRJAUTUNEENA!</p>
 Jätä ilmoitus <a href="/new">Tästä</a>
 <br>
 <a href="/logout">Kirjaudu ulos</a>
 {% else %}
-Kirjaudu sisään:
-<hr>
-<form action="/login" method="POST">
-Tunnus: <input type="text" name="username">
-<p>
-    Salasana: <input type="password" name="password">
-</p>
-<p>
-    <input type="submit" value="Kirjaudu">
-</p>
-</form>
+Kirjaudu sisään <a href="/login">tästä</a>:
 <hr>
 Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 {% endif %}
