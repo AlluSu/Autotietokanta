@@ -1,6 +1,13 @@
 Tervetuloa autonettiin! <br>
 Myytävät autot:
 <hr>
+{% for car in cars %}
+{{ car[0] }}<br>
+{{ car[1] }}<br>
+{{ car[2] }}<br>
+{{ car[3] }}<br>
+<hr>
+{% endfor %}
 {% if session.username %}
 <p>Kirjautuneena {{ session.username }}</p>
 Jätä ilmoitus <a href="/new">Tästä</a>

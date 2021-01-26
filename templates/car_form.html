@@ -1,4 +1,4 @@
-<form action="/result" method="POST">
+<form action="/send" method="POST">
 <p>
     Syötä auton tiedot:
 </p>
@@ -21,6 +21,10 @@ Korimalli:
 <label for="hatchback">Viistoperä</label>
 <input type="radio" id="suv" name="chassis" value="Maasturi">
 <label for="suv">Maasturi</label>
+<input type="radio" id="van" name="chassis" value="Pakettiauto">
+<label for="van">Pakettiauto</label>
+<input type="radio" id="pickup" name="chassis" value="Lava-auto">
+<label for="pickup">Lava-auto</label>
 <br>
 Käyttövoima:
 <input type="radio" id="gasoline" name="fuel" value="Bensiini" checked>
@@ -69,17 +73,14 @@ Teho:
 (kilowatteina, kW)
 <br>
 Tieliikennekelpoisuus:
-<input type="radio" id="notlegal" name="legal" value="Ei">
-<label for="not-legal">Ei tieliikennekelpoinen</label>
-<input type="radio" id="legal" name="legal" value="Kyllä" checked>
+<input type="radio" id="notlegal" name="legal" value="0">
+<label for="legal">Ei tieliikennekelpoinen</label>
+<input type="radio" id="legal" name="legal" value="1" checked>
 <label for="legal">Tieliikennekelpoinen</label>
 <br>
 Lisätiedot:
 <br>
 <textarea name="info" rows="3" cols="50"></textarea>
-<br>
-<input type="submit" value="Lähetä">
-<input type="reset" value="Tyhjennä">
 <br>
 Raksi varusteet:
 <br>
@@ -133,4 +134,7 @@ Raksi varusteet:
     <label for="varuste12">Sähkösäätöiset penkit</label>
 </li>
 </ul>
+<br>
+<input type="submit" value="Lähetä">
+<input type="reset" value="Tyhjennä">
 </form>
