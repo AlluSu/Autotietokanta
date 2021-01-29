@@ -1,0 +1,18 @@
+Ilmoituksen tiedot:
+<hr>
+{% for spec in specs %}
+<b>Merkki: </b>{{ spec[1] }} <br>
+<b>Malli: </b>{{ spec[2] }} <br>
+<b>Korimalli: </b>{{ spec[3] }} <br>
+<b>Käyttövoima: </b>{{ spec[4] }} <br>
+<b>Vetotapa: </b>{{ spec[5] }} <br>
+<b>Vaihteisto: </b>{{ spec[6] }} <br>
+<b>Mittarilukema: </b>{{ spec[7] }} <br>
+<b>Vuosimalli: </b>{{ spec[8] }} <br>
+<b>Hinta (€): </b>{{ spec[9] }} <br>
+<b>Väri: </b>{{ spec[10] }} <br>
+<b>Moottorin tilavuus (cm³): </b>{{ spec[11] }} <br>
+<b>Teho (kW): </b>{{ spec[12] }} <br>
+<b>Tieliikennekelpoisuus: </b>{{ spec[13 ]}} <br>
+{% endfor %}
+<a href="/">Etusivulle</a>

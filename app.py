@@ -10,6 +10,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
 
+
 def create_session_token():
     return urandom(16).hex()
 
@@ -84,18 +85,34 @@ def send():
     engine = request.form["engine"]
     power = request.form["power"]
     legal = request.form["legal"]
+
+    #Car data
     sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, street_legal) VALUES (:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, :engine, :power, :street_legal)"
     db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis,
     "fuel":fuel, "drive":drive, "transmission":transmission, "mileage":mileage,
     "year":year, "price":price, "color":color, "engine":engine, "power":power,
     "street_legal":legal})
     db.session.commit()
+
+    #Ad data
+    #info = request.form["info"]
+    #sql = "INSERT INTO ads (info, created, visible) VALUES (:info, NOW(), 1) RETURNING id"
+    #db.session.execute(sql, {"info":info})
+    #db.session.commit()
+
     return redirect("/")
 
 @app.route("/logout")
 def logout():
     del session["user_id"]
     return redirect("/")
+
+@app.route("/ad/<int:id>")
+def ad_page(id):
+    sql = "SELECT * FROM cars WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    specs = result.fetchall()
+    return render_template("ad_info.html", specs=specs)
 
 @app.route("/register", methods=["GET","POST"])
 def register():
