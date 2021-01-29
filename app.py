@@ -95,10 +95,10 @@ def send():
     db.session.commit()
 
     #Ad data
-    #info = request.form["info"]
-    #sql = "INSERT INTO ads (info, created, visible) VALUES (:info, NOW(), 1) RETURNING id"
-    #db.session.execute(sql, {"info":info})
-    #db.session.commit()
+    info = request.form["info"]
+    sql = "INSERT INTO ads (info, created, visible) VALUES (:info, NOW(), :visible) RETURNING id"
+    db.session.execute(sql, {"info":info, "visible":True})
+    db.session.commit()
 
     return redirect("/")
 

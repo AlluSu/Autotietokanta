@@ -1,4 +1,4 @@
-Tervetuloa autonettiin! <br>
+Tervetuloa AutoNettiin! <br>
 Myytävät autot:
 <hr>
 {% for car in cars %}
@@ -11,7 +11,6 @@ Vuosimalli: {{ car[4] }}<br>
 {% endfor %}
 {% if session.user_id %}
 <p>Kirjautuneena {{ session.username }}</p>
-<p>OLET KIRJAUTUNEENA!</p>
 Jätä ilmoitus <a href="/new">Tästä</a>
 <br>
 <a href="/logout">Kirjaudu ulos</a>
