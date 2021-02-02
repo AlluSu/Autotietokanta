@@ -32,7 +32,8 @@ CREATE TABLE ads (
     info TEXT,
     created TIMESTAMP,
     visible BOOLEAN,
-    user_id INTEGER REFERENCES users
+    user_id INTEGER REFERENCES users,
+    car_id INTEGER REFERENCES cars
 );
 
 CREATE TABLE car_ad (

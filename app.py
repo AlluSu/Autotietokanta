@@ -98,8 +98,8 @@ def send():
 
     #Ad data
     info = request.form["info"]
-    sql = "INSERT INTO ads (info, created, visible, user_id) VALUES (:info, NOW(), :visible, :user_id) RETURNING id"
-    result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id()})
+    sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES (:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
+    result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id(), "car_id":car_id})
     ad_id = result.fetchone()[0]
     print(ad_id)
     print(user_id())
@@ -120,10 +120,37 @@ def logout():
 
 @app.route("/ad/<int:id>")
 def ad_page(id):
-    sql = "SELECT * FROM cars WHERE id=:id"
+    #Ad info
+    sql = "SELECT info, created, user_id, car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
-    specs = result.fetchall()
-    return render_template("ad_info.html", specs=specs)
+    ad_data = result.fetchall()
+    print(ad_data)
+
+    #Car_id
+    sql = "SELECT car_id FROM ads WHERE id=:id"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    car_id = result[0]
+    print(car_id)
+
+    #Car info
+    sql = "SELECT * FROM cars WHERE id=:id"
+    result = db.session.execute(sql, {"id":car_id})
+    car_data = result.fetchall()
+    print(car_data)
+
+    #Seller id
+    sql = "SELECT user_id FROM ads a WHERE a.id=:id"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    seller_id = result[0]
+    print(seller_id)
+
+    #Seller info
+    sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
+    result = db.session.execute(sql, {"id":seller_id})
+    seller_data = result.fetchall()
+    print(seller_data)
+
+    return render_template("ad_info.html", specs=car_data)
 
 @app.route("/register", methods=["GET","POST"])
 def register():
