@@ -87,17 +87,28 @@ def send():
     legal = request.form["legal"]
 
     #Car data
-    sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, street_legal) VALUES (:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, :engine, :power, :street_legal)"
-    db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis,
+    sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, street_legal) VALUES (:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, :engine, :power, :street_legal) RETURNING id"
+    result = db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis,
     "fuel":fuel, "drive":drive, "transmission":transmission, "mileage":mileage,
     "year":year, "price":price, "color":color, "engine":engine, "power":power,
     "street_legal":legal})
+    car_id = result.fetchone()[0]
+    print(car_id)
     db.session.commit()
 
     #Ad data
     info = request.form["info"]
-    sql = "INSERT INTO ads (info, created, visible) VALUES (:info, NOW(), :visible) RETURNING id"
-    db.session.execute(sql, {"info":info, "visible":True})
+    sql = "INSERT INTO ads (info, created, visible, user_id) VALUES (:info, NOW(), :visible, :user_id) RETURNING id"
+    result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id()})
+    ad_id = result.fetchone()[0]
+    print(ad_id)
+    print(user_id())
+    db.session.commit()
+
+    #Creating a reference between ad and car
+    sql = "INSERT INTO car_ad (car_id, ad_id) VALUES (:car_id, :ad_id)"
+    print(car_id)
+    db.session.execute(sql, {"car_id":car_id, "ad_id":ad_id})
     db.session.commit()
 
     return redirect("/")

@@ -15,13 +15,6 @@ CREATE TABLE cars (
     street_legal BOOLEAN
 );
 
-CREATE TABLE ads (
-    id SERIAL PRIMARY KEY,
-    info TEXT,
-    created TIMESTAMP,
-    visible BOOLEAN
-);
-
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE,
@@ -34,19 +27,27 @@ CREATE TABLE users (
     password TEXT
 );
 
+CREATE TABLE ads (
+    id SERIAL PRIMARY KEY,
+    info TEXT,
+    created TIMESTAMP,
+    visible BOOLEAN,
+    user_id INTEGER REFERENCES users
+);
+
+CREATE TABLE car_ad (
+    car_id INTEGER REFERENCES cars,
+    ad_id INTEGER REFERENCES ads
+);
+
 /*
 CREATE TABLE equipment (
     id SERIAL PRIMARY KEY,
-    name UNIQUE,
+    name UNIQUE
 );
 
 CREATE TABLE car_equipment (
     car_id REFERENCES cars,
     equipment_id REFERENCES equipment
-);
-
-CREATE TABLE car_ad (
-    car_id REFERENCES cars,
-    ad_id REFERENCES ads
 );
 */
