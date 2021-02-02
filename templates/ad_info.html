@@ -1,4 +1,4 @@
-Ilmoituksen tiedot:
+<b>Ilmoituksen tiedot:</b>
 <hr>
 {% for spec in specs %}
 <b>Merkki: </b>{{ spec[1] }} <br>
@@ -15,7 +15,19 @@ Ilmoituksen tiedot:
 <b>Teho (kW): </b>{{ spec[12] }} <br>
 <b>Tieliikennekelpoisuus: </b>{{ spec[13 ]}} <br>
 {% endfor %}
-Ilmoittajan tiedot:
-<br>
 <hr>
-<a href="/">Etusivulle</a>
+<b>Lisätiedot:</b> <br>
+{% for i in info %}
+{{ i[0] }} <br>
+<b>Ilmoitus jätetty:</b> <br> {{ i[1] }} <br>
+{% endfor %}
+<hr>
+<b>Ilmoittajan tiedot:</b> <br>
+{% for info in seller %}
+<b>Myyjä: </b>{{ info[0] }} {{ info[1] }}<br>
+<b>Puhelinnumero: </b>{{ info[2] }} <br>
+<b>Sähköposti: </b>{{ info[3] }} <br>
+<b>Paikkakunta: </b>{{ info[4] }} <br>
+{% endfor %}
+<hr>
+<a href="/">Palaa takaisin etusivulle</a>

@@ -150,7 +150,7 @@ def ad_page(id):
     seller_data = result.fetchall()
     print(seller_data)
 
-    return render_template("ad_info.html", specs=car_data)
+    return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data)
 
 @app.route("/register", methods=["GET","POST"])
 def register():
