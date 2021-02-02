@@ -34,6 +34,7 @@ CREATE TABLE users (
     password TEXT
 );
 
+/*
 CREATE TABLE equipment (
     id SERIAL PRIMARY KEY,
     name UNIQUE,
@@ -48,3 +49,4 @@ CREATE TABLE car_ad (
     car_id REFERENCES cars,
     ad_id REFERENCES ads
 );
+*/

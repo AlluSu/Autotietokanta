@@ -1,4 +1,16 @@
 Tervetuloa AutoNettiin! <br>
+{% if session.user_id %}
+<p>Kirjautuneena: {{ session.username }}</p>
+Jätä ilmoitus <a href="/new">Tästä</a>
+<br>
+<a href="/logout">Kirjaudu ulos</a>
+<br>
+{% else %}
+Kirjaudu sisään <a href="/login">tästä</a>:
+<br>
+Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
+<br>
+{% endif %}
 Myytävät autot:
 <hr>
 {% for car in cars %}
@@ -9,13 +21,3 @@ Vuosimalli: {{ car[4] }}<br>
 <a href="/ad/{{ car[0] }}">Mene ilmoitukseen</a>
 <hr>
 {% endfor %}
-{% if session.user_id %}
-<p>Kirjautuneena {{ session.username }}</p>
-Jätä ilmoitus <a href="/new">Tästä</a>
-<br>
-<a href="/logout">Kirjaudu ulos</a>
-{% else %}
-Kirjaudu sisään <a href="/login">tästä</a>:
-<hr>
-Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
-{% endif %}
