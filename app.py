@@ -10,7 +10,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
 
-
 def create_session_token():
     return urandom(16).hex()
 
@@ -19,7 +18,12 @@ def index():
     sql = "SELECT id, brand, model, mileage, year FROM cars"
     result = db.session.execute(sql)
     cars = result.fetchall()
-    return render_template("index.html", cars=cars)
+
+    sql = "SELECT id FROM ads WHERE user_id=:id"
+    result = db.session.execute(sql, {"id":user_id()})
+    owner_id = result.fetchone()
+    #print(owner_id)
+    return render_template("index.html", cars=cars, owner=owner_id)
 
 @app.route("/login_user", methods=["POST"])
 def login_as_user():
@@ -34,6 +38,8 @@ def login_as_user():
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
             session["username"] = username
+            #print(session["user_id"])
+            #print(session["username"])
             return redirect("/")
 
 
@@ -43,6 +49,9 @@ def login():
 
 def user_id():
     return session.get("user_id", 0)
+
+def logged_user():
+    return session.get("username",0)
 
 @app.route("/new")
 def new_car_form():
@@ -93,7 +102,7 @@ def send():
     "year":year, "price":price, "color":color, "engine":engine, "power":power,
     "street_legal":legal})
     car_id = result.fetchone()[0]
-    print(car_id)
+    #print(car_id)
     db.session.commit()
 
     #Ad data
@@ -101,13 +110,13 @@ def send():
     sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES (:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
     result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id(), "car_id":car_id})
     ad_id = result.fetchone()[0]
-    print(ad_id)
-    print(user_id())
+    #print(ad_id)
+    #print(user_id())
     db.session.commit()
 
     #Creating a reference between ad and car
     sql = "INSERT INTO car_ad (car_id, ad_id) VALUES (:car_id, :ad_id)"
-    print(car_id)
+    #print(car_id)
     db.session.execute(sql, {"car_id":car_id, "ad_id":ad_id})
     db.session.commit()
 
@@ -116,6 +125,7 @@ def send():
 @app.route("/logout")
 def logout():
     del session["user_id"]
+    del session["username"]
     return redirect("/")
 
 @app.route("/ad/<int:id>")
@@ -124,31 +134,31 @@ def ad_page(id):
     sql = "SELECT info, created, user_id, car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     ad_data = result.fetchall()
-    print(ad_data)
+    #print(ad_data)
 
     #Car_id
     sql = "SELECT car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id}).fetchone()
     car_id = result[0]
-    print(car_id)
+    #print(car_id)
 
     #Car info
     sql = "SELECT * FROM cars WHERE id=:id"
     result = db.session.execute(sql, {"id":car_id})
     car_data = result.fetchall()
-    print(car_data)
+    #print(car_data)
 
     #Seller id
     sql = "SELECT user_id FROM ads a WHERE a.id=:id"
     result = db.session.execute(sql, {"id":id}).fetchone()
     seller_id = result[0]
-    print(seller_id)
+    #print(seller_id)
 
     #Seller info
     sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
     result = db.session.execute(sql, {"id":seller_id})
     seller_data = result.fetchall()
-    print(seller_data)
+    #print(seller_data)
 
     return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data)
 
@@ -173,3 +183,6 @@ def create_new_user():
         return redirect("/")
     except:
         return render_template("error.html")
+
+#@app.route("/userinfo", methods=["GET", "POST"])
+#def show_user_data():
