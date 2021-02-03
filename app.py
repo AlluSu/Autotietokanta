@@ -184,5 +184,23 @@ def create_new_user():
     except:
         return render_template("error.html")
 
-#@app.route("/userinfo", methods=["GET", "POST"])
-#def show_user_data():
+@app.route("/userinfo", methods=["GET", "POST"])
+def show_user_data():
+    sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
+    logged = user_id()
+    result = db.session.execute(sql, {"id":logged})
+    user_data = result.fetchall()
+    print(user_data)
+    return render_template("user_data.html", user=user_data)
+
+@app.route("/update_user_info", methods=["POST"])
+def update_user_info():
+    first_name = request.form["fname"]
+    last_name = request.form["sname"]
+    location = request.form["location"]
+    phone = request.form["tel"]
+    email = request.form["email"]
+    sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, location=:location WHERE id=:id"
+    result = db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone, "email":email, "location":location})
+    db.session.commit()
+    return redirect("/userinfo")

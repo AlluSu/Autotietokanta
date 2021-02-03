@@ -1,0 +1,23 @@
+<form action="/update_user_info" method="POST">
+Tietosi:
+{% for i in user %}
+<br>
+<label for="fname">Etunimi: </label>
+<input type="text" id="fname" name="fname" value="{{ i[0] }}" required>
+<br>
+<label for="sname">Sukunimi: </label>
+<input type="text" id="sname" name="sname" value="{{ i[1] }}" required>
+<br>
+<label for="tel">Puhelinnumero: </label>
+<input type="tel" id="tel" name="tel" value="{{ i[2] }}" required>
+<br>
+<label for="email">Sähköposti: </label>
+<input type="email" id="email" name="email" value="{{ i[3] }}">
+<br>
+<label for="location">Paikkakunta: </label>
+<input type="location" id="location" name="location" value="{{ i[4] }}">
+<br>
+<input type="submit" value="Lähetä">
+{% endfor %}
+</form>
+<a href="/">Etusivulle</a>
