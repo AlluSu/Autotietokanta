@@ -85,54 +85,12 @@ Lisätiedot:
 Raksi varusteet:
 <br>
 <ul style="list-style-type:none;">
+    {% for i in equipment %}
 <li>
-    <input type="checkbox" id="1" name="varuste1" value="Nahkaverhoilu">
-    <label for="varuste1">Nahkaverhoilu</label>
+    <input type="checkbox" id="1" name="varusteet" value="{{ i[0] }}">
+    <label for="varusteet">{{ i[0] }}</label>
 </li>
-<li>
-    <input type="checkbox" id="2" name="varuste2" value="Ilmastointi">
-    <label for="varuste2">Ilmastointi</label>
-</li>
-<li>
-    <input type="checkbox" id="3" name="varuste3" value="Vakionopeudensaadin">
-    <label for="varuste3">Vakionopeudensäädin</label>
-</li>
-<li>
-    <input type="checkbox" id="4" name="varuste4" value="Kattoluukku">
-    <label for="varuste4">Kattoluukku</label>
-</li>
-<li>
-    <input type="checkbox" id="5" name="varuste5" value="Keskuslukitus">
-    <label for="varuste5">Keskuslukitus</label>
-</li>
-<li>
-    <input type="checkbox" id="6" name="varuste6" value="Ilmajouset">
-    <label for="varuste6">Ilmajouset</label>
-</li>
-<li>
-    <input type="checkbox" id="7" name="varuste7" value="Vetokoukku">
-    <label for="varuste7">Vetokoukku</label>
-</li>
-<li>
-    <input type="checkbox" id="8" name="varuste8" value="Huoltokirja">
-    <label for="varuste8">Huoltokirja</label>
-</li>
-<li>
-    <input type="checkbox" id="9" name="varuste9" value="Luistonesto">
-    <label for="varuste9">Luistonestojärjestelmä</label>
-</li>
-<li>
-    <input type="checkbox" id="10" name="varuste10" value="ABS">
-    <label for="varuste10">ABS-jarrut</label>
-</li>
-<li>
-    <input type="checkbox" id="11" name="varuste11" value="Pysakointitutka">
-    <label for="varuste11">Pysäköintitutka</label>
-</li>
-<li>
-    <input type="checkbox" id="12" name="varuste12" value="Sahkopenkit">
-    <label for="varuste12">Sähkösäätöiset penkit</label>
-</li>
+{% endfor %}
 </ul>
 <br>
 <input type="submit" value="Lähetä">

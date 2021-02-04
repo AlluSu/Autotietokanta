@@ -41,14 +41,26 @@ CREATE TABLE car_ad (
     ad_id INTEGER REFERENCES ads
 );
 
-/*
 CREATE TABLE equipment (
     id SERIAL PRIMARY KEY,
-    name UNIQUE
+    name TEXT UNIQUE
 );
 
+/* Hard coded equipment */
+INSERT INTO equipment (name) VALUES ('Nahkaverhoilu');
+INSERT INTO equipment (name) VALUES ('Ilmastointi');
+INSERT INTO equipment (name) VALUES ('Vakionopeudensäädin');
+INSERT INTO equipment (name) VALUES ('Kattoluukku');
+INSERT INTO equipment (name) VALUES ('Keskuslukitus'); 
+INSERT INTO equipment (name) VALUES ('Ilmajouset');
+INSERT INTO equipment (name) VALUES ('Vetokoukku');
+INSERT INTO equipment (name) VALUES ('Huoltokirja');
+INSERT INTO equipment (name) VALUES ('Luistonestojärjestelmä');
+INSERT INTO equipment (name) VALUES ('ABS-jarrut');
+INSERT INTO equipment (name) VALUES ('Pysäköintitutka');
+INSERT INTO equipment (name) VALUES ('Sähkösäätöiset penkit');
+
 CREATE TABLE car_equipment (
-    car_id REFERENCES cars,
-    equipment_id REFERENCES equipment
+    car_id INTEGER REFERENCES cars,
+    equipment_id INTEGER REFERENCES equipment
 );
-*/

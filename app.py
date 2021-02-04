@@ -54,7 +54,11 @@ def logged_user():
 
 @app.route("/new")
 def new_car_form():
-    return render_template("car_form.html")
+    sql = "SELECT name FROM equipment"
+    result = db.session.execute(sql)
+    equipment = result.fetchall()
+    print(equipment)
+    return render_template("car_form.html", equipment=equipment)
 
 @app.route("/result", methods=["POST"])
 def car_added():
