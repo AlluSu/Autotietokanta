@@ -15,14 +15,13 @@ def create_session_token():
 
 @app.route("/")
 def index():
-    sql = "SELECT id, brand, model, mileage, year FROM cars"
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
     result = db.session.execute(sql)
     cars = result.fetchall()
 
-    sql = "SELECT id FROM ads WHERE user_id=:id"
-    result = db.session.execute(sql, {"id":user_id()})
+    sql = "SELECT id FROM ads WHERE user_id=:id AND visible=:visible"
+    result = db.session.execute(sql, {"id":user_id(), "visible":True})
     owner_id = result.fetchone()
-    #print(owner_id)
     return render_template("index.html", cars=cars, owner=owner_id)
 
 @app.route("/login_user", methods=["POST"])
@@ -38,8 +37,6 @@ def login_as_user():
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
             session["username"] = username
-            #print(session["user_id"])
-            #print(session["username"])
             return redirect("/")
         else:
             return render_template("error.html")
@@ -104,7 +101,6 @@ def send():
     "year":year, "price":price, "color":color, "engine":engine, "power":power,
     "street_legal":legal})
     car_id = result.fetchone()[0]
-    #print(car_id)
     db.session.commit()
 
     #Ad data
@@ -112,13 +108,10 @@ def send():
     sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES (:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
     result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id(), "car_id":car_id})
     ad_id = result.fetchone()[0]
-    #print(ad_id)
-    #print(user_id())
     db.session.commit()
 
     #Creating a reference between ad and car
     sql = "INSERT INTO car_ad (car_id, ad_id) VALUES (:car_id, :ad_id)"
-    #print(car_id)
     db.session.execute(sql, {"car_id":car_id, "ad_id":ad_id})
     db.session.commit()
 
@@ -136,33 +129,28 @@ def ad_page(id):
     sql = "SELECT info, created, user_id, car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     ad_data = result.fetchall()
-    #print(ad_data)
 
     #Car_id
     sql = "SELECT car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id}).fetchone()
     car_id = result[0]
-    #print(car_id)
 
     #Car info
     sql = "SELECT * FROM cars WHERE id=:id"
     result = db.session.execute(sql, {"id":car_id})
     car_data = result.fetchall()
-    #print(car_data)
 
     #Seller id
     sql = "SELECT user_id FROM ads a WHERE a.id=:id"
     result = db.session.execute(sql, {"id":id}).fetchone()
     seller_id = result[0]
-    #print(seller_id)
 
     #Seller info
     sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
     result = db.session.execute(sql, {"id":seller_id})
     seller_data = result.fetchall()
-    #print(seller_data)
 
-    return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data)
+    return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id)
 
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -178,7 +166,6 @@ def create_new_user():
     phone = request.form["tel"]
     email = request.form["email"]
     hash_value = generate_password_hash(password)
-    #app.config["SECRET_KEY"] = create_session_token()
     try:
         sql = "INSERT INTO users (username, firstname, surname, telephone, email, location, admin, password) VALUES (:username, :firstname, :surname, :telephone, :email, :location, :admin, :password)"
         db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name,"telephone":phone,"email":email, "location":location, "admin":False, "password":hash_value})
@@ -204,6 +191,12 @@ def update_user_info():
     phone = request.form["tel"]
     email = request.form["email"]
     sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, location=:location WHERE id=:id"
-    result = db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone, "email":email, "location":location})
+    db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone, "email":email, "location":location})
     db.session.commit()
     return redirect("/userinfo")
+
+@app.route("/remove_ad", methods=["POST"])
+def remove_ad():
+    sql = "UPDATE ads SET visible=False WHERE user_id=:logged"
+    db.session.execute(sql, {"logged":user_id()})
+    return redirect("/")

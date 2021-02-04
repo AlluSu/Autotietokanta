@@ -30,4 +30,8 @@
 <b>Paikkakunta: </b>{{ info[4] }} <br>
 {% endfor %}
 <hr>
+{% if logged == id %}
+<a href="/remove_ad">Poista ilmoitus tästä</a>
+<br>
+{% endif %}
 <a href="/">Palaa takaisin etusivulle</a>
