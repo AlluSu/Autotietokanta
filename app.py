@@ -198,5 +198,7 @@ def update_user_info():
 @app.route("/remove_ad", methods=["POST"])
 def remove_ad():
     sql = "UPDATE ads SET visible=False WHERE user_id=:logged"
+    print(user_id())
     db.session.execute(sql, {"logged":user_id()})
+    db.session.commit()
     return redirect("/")
