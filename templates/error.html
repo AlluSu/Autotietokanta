@@ -1,1 +1,6 @@
-<p>Tapahtui virhe :-(</p>
+{% if user %}
+<p>ei käyttäjää jonka nimi on {{ user }}</p>
+{% else %}
+<p>Tarkista salasana!</p>
+{% endif %}
+<a href="/">Palaa etusivulle</a>

@@ -33,7 +33,7 @@ def login_as_user():
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
-        return render_template("no_user.html", user=username)
+        return render_template("error.html", user=username)
     else:
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
@@ -41,6 +41,8 @@ def login_as_user():
             #print(session["user_id"])
             #print(session["username"])
             return redirect("/")
+        else:
+            return render_template("error.html")
 
 
 @app.route("/login", methods=["GET"])
