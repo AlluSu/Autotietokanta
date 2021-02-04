@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
 
 def create_session_token():
@@ -32,7 +33,7 @@ def login_as_user():
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
-        return render_template("no_user.html", user=user)
+        return render_template("no_user.html", user=username)
     else:
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
@@ -175,7 +176,7 @@ def create_new_user():
     phone = request.form["tel"]
     email = request.form["email"]
     hash_value = generate_password_hash(password)
-    app.config["SECRET_KEY"] = create_session_token()
+    #app.config["SECRET_KEY"] = create_session_token()
     try:
         sql = "INSERT INTO users (username, firstname, surname, telephone, email, location, admin, password) VALUES (:username, :firstname, :surname, :telephone, :email, :location, :admin, :password)"
         db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name,"telephone":phone,"email":email, "location":location, "admin":False, "password":hash_value})
