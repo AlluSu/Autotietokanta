@@ -55,6 +55,7 @@ Jos käyttäjä painaa omassa ilmoituksessaan *Muokkaa ilmoitusta*, avautuu sama
 ![editing](photos/editing_car_info2.png)  
 Ylemmässä kuvassa on laskettu auton hintaa ja lisätty hieman tekstiä.  
 ![edited](photos/ad_after_Editing.png)  
+Tällä hetkellä sovelluksessa on mystinen bugi eli jos yhdellä käyttäjällä on useampi kuin yksi ilmoitus, niin yhden ilmoituksen muokkaaminen avaa kummatkin ilmoitukset muokattavaksi. Tämä tullaan korjaamaan.  
 
 #### Omien tietojen muokkaus  
 Käyttäjän on mahdollista muokata omia käyttäjätietojaan, poislukien muuttaa salasanaa tai käyttäjätunnustaan.  

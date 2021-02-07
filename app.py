@@ -202,7 +202,6 @@ def update_user_info():
 @app.route("/remove_ad/<int:id>", methods=["POST"])
 def remove_ad(id):
     sql = "UPDATE ads SET visible=False WHERE user_id=:logged AND ads.id=:id"
-    #print(user_id())
     db.session.execute(sql, {"logged":user_id(), "id":id})
     db.session.commit()
     return redirect("/")
@@ -211,7 +210,7 @@ def remove_ad(id):
 def edit_car_info(id):
     sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible"
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True})
-    ad_data = result.fetchall()
+    ad_data = result
     print(ad_data)
     db.session.commit()
     return render_template("car_data.html", data=ad_data)
