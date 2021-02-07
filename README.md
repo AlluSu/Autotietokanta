@@ -1,65 +1,62 @@
 # Autotietokanta (Tietokantasovellusten harjoitustyö)  
 
-## Idea (Vaihe 1)  
+## Vaihe 2  
 
-Autotietokanta on internet-sovellus, jossa eri käyttäjät voivat myydä autoja.  
+Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa eri käyttäjät voivat myydä autoja.  
 
-### Käyttäjät  
-Käyttäjä voi luoda tunnuksen sovellukseen ja siten tehdä uuden ilmoituksen myytävästä autostaan. Yksi kirjautunut käyttäjä voi luoda useita myynti-ilmoituksia ja yhdessä ilmoituksessa myydään vain yhtä autoa.  
-Tavallisten käyttäjien lisäksi järjestelmässä on ainakin yksi *Admin-käyttäjä*/*moderaattori*, joka voi tarvittaessa poistaa epäasiallisia ilmoituksia ja muuta mukavaa.  
-Käyttäjistä tallennettaisiin ainakin:
-  * id
-  * käyttäjätunnus
-  * nimi
-  * osoite- ja yhteystiedot
-  * onko admin
-  * salasana
-  * viite ilmoituksiinsa
+### Sovelluksen käyttäminen  
 
-### Autot  
-Autot olisivat omassa taulussaan ja niiden tiedot täytettäisiin käyttäjän toimesta joko kirjoittamalla lomakkeelle tai raksimalla listasta tai valikosta tiedot.  
-Autoista tallennettaisiin ainakin:  
-  * id
-  * korimalli
-  * merkki 
-  * malli
-  * käyttövoima
-  * vaihteisto
-  * hinta
-  * vuosimalli
-  * väri
-  * moottorin tilavuus
-  * teho
-  * vetotapa
-  * tieliikennekelpoisuus
-  * viite varusteet-tauluun varusteen id:hen
-  * viite varusteet-tauluun varusteen id:hen
-  * viite ...
-  * (varusteet listattaisiin auton yhteyteen tähän tapaan)
+#### Päänäkymä
+Sovelluksen päänäkymä näyttää seuraavalta:  
+![indexpage](photos/main_screen_without_login.png)  
+Aktiiviset ilmoitukset eli myytävät autot näkyvät allekkain heti etusivulla ja jokaisesta on linkki tarkempiin
+tietoihin. Jos käyttäjä ei ole kirjautuneena, tarjotaan mahdollisuus kirjautumiseen tai käyttäjän luontiin. 
 
-### Varusteet  
-Ilmoituksessa voisi olla optio täyttää varustelista auton yhteyteen jos auto ei oli aivan täysin karvalakkimalli.  
-Varusteet-taulu voisi olla jotakuinkin seuraavanlainen:  
-  * varuste_id
-  * varusteen_nimi  
-Tämä vaatii jatkokehittelyä jos haluaisi eritellä esimerkiksi, että jos autosta löytyy kattoluukku, onko se sähköinen vai manuaalinen tai jos autossa on sähköikkunat vain edessä mutta takapenkillä manuaaliset veivi-ikkunat niin miten tämä näkyy tietokannassa tai käyttäjälle.  
-
-### Ilmoitukset  
-Ilmoitus sisältäisi voisi sisältää seuraavat tiedot:  
-  * id
-  * milloin jätetty (pvm ja kellonaika)
-  * myyntiteksti
-  * viite myyjään eli ilmoituksen jättäjään eli käyttäjään
-  * viite autoon  
- Ja jos aikaa niin tietenkin kuva autosta jolloin olisi viite kuvat-tauluun.
-
-### Kuvat  
-Jos on aikaa, tietokantaan voisi tehdä oman taulun kuville.  
-  * id
-  * nimi
-  * data
-  
+#### Käyttäjän luominen  
+Uuden käyttäjän luominen näyttää seuraavalta:  
+![new_user](photos/new_user.png)  
+Käyttäjä voi syöttää tiedot lomakkeelle jonka perusteella luodaan käyttäjä. Kaikki kentät on pakollista täyttää ja tämä on määritelty HTML-tiedostossta attribuutilla *required*.
 
 
+#### Kirjautuminen  
+Tällä hetkellä sovelluksen tuotantoversiossa eli heroku-versiossa on kolme käyttäjää, joita voi testata:  
+Käyttäjätunnus: allu ; Salasana: kissa123  
+Käyttäjätunnus: henkka ; Salasana: koira123  
+Käyttäjätunnus: ana ; Salasana: hevonen123  
 
+Kirjautumisnäkymä näyttää seuraavalta:  
+![login](photos/logging.png)  
+Jos käyttäjätunnusta ei löydy, siitä ilmoitetaan. Jos taas käyttäjätunnus löytyy, mutta annettu salasana on väärä, niin siitäkin ilmoitetaan.  
 
+Kun käyttäjä kirjautuu sisään, näyttää etusivu seuraavalta:  
+![indexpage_with_login](photos/main_Screen_with_login.png)  
+Kirjautuneena oleva käyttäjä voi siis:  
+* Jättää uuden ilmoituksen  
+* Muokata omia tietojaan  
+* Kirjautua ulos
+* Ja tietenkin katsella muiden ilmoituksia  
+
+#### Ilmoituksen luonti  
+Kirjautunut käyttäjä voi luoda omia ilmoituksia painamalla *Jätä ilmoitus*-painiketta, jolloin avautuu seuraavanlainen näkymä:  
+![new_ad](photos/new_car.png)  
+Jälleen kaikki kentät on täytettävä, poislukien *Lisätiedot*. Lisäksi on mahdollista raksia autoon varusteita. Varusteiden talletus ei tosin ole vielä käytössä tässä versiossa. Varusteet ovat kovakoodattuja tietokantaan ja ne haetaan sieltä.  
+![adding_ad](photos/new_car_with_data.png)  
+Kun käyttäjä on painanut *Lähetä*, ohjaa sovellus takaisin etusivulle listaukseen.  
+![added_ad](photos/main__screen_after_adding.png)  
+
+#### Ilmoitusten katselu  
+Sovellus tunnistaa käyttäjän perusteella, onko tarkasteltava ilmoitus käyttäjän itsensä jättämä vai jonkun muun. Jos käyttäjän tarkastelema ilmoitus on kirjautuneena olevan käyttäjän itsensä jättämä, tarjotaan mahdollisuus ilmoituksen poistamiseen, ilmoituksen muokkaamiseen ja etusivulle siirtymiseen.  
+![own_ad](photos/own_ad.png)  
+Jos taas ilmoitus on jonkun muun, tarjotaan vain mahdollisuus siirtyä etusivulle:  
+![someones_ad](photos/someones_ad.png)  
+
+#### Ilmoituksen muokkaus
+Jos käyttäjä painaa omassa ilmoituksessaan *Muokkaa ilmoitusta*, avautuu samanlainen sivu kuin jättäisi kokonaan uuden ilmoituksen (ilman varustelistausta, korjataan seuraavaan versioon). Tällä hetkellä sovellus ei osaa hakea tietokannan datan perusteella tietoa siitä, että mitkä radiobutton-komponentit ovat valittuna joten ne siirtyvät oletusarvoihinsa jokaisella muokkauskerralla, jolloin vastuu on käyttäjällä muistaa muuttaa myös ne vastaamaan alkuperäistä.  
+![editing](photos/editing_car_info2.png)  
+Ylemmässä kuvassa on laskettu auton hintaa ja lisätty hieman tekstiä.  
+![edited](photos/ad_after_Editing.png)  
+
+#### Omien tietojen muokkaus  
+Käyttäjän on mahdollista muokata omia käyttäjätietojaan, poislukien muuttaa salasanaa tai käyttäjätunnustaan.  
+![updating_user_data](photos/user_info_update.png)  
+Painamalla *Lähetä* tiedot tallettuvat tietokantaan.
