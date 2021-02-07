@@ -13,13 +13,19 @@
 <b>Väri: </b>{{ spec[10] }} <br>
 <b>Moottorin tilavuus (cm³): </b>{{ spec[11] }} <br>
 <b>Teho (kW): </b>{{ spec[12] }} <br>
-<b>Tieliikennekelpoisuus: </b>{{ spec[13 ]}} <br>
+<b>Tieliikennekelpoisuus: </b>
+{% if spec[13] == true %}
+Kyllä
+{% else %}
+Ei
+{% endif %}
+<br>
 {% endfor %}
 <hr>
 <b>Lisätiedot:</b> <br>
 {% for i in info %}
-{{ i[0] }} <br>
-<b>Ilmoitus jätetty:</b> <br> {{ i[1] }} <br>
+{{ i[1] }} <br>
+<b>Ilmoitus jätetty:</b> <br> {{ i[2].strftime("%Y-%m-%d") }} <br>
 {% endfor %}
 <hr>
 <b>Ilmoittajan tiedot:</b> <br>
@@ -31,10 +37,19 @@
 {% endfor %}
 <hr>
 {% if logged == id %}
-<form action="/remove_ad" method="POST">
+{% for i in info %}
+<form action="/remove_ad/{{ i[0]  }}" method="POST">
     Poista ilmoitus tästä
     <input type="submit" value="Poista ilmoitus">
 </form>
+{% endfor %}
+<br>
+{% for i in info %}
+<form action="/update_car_info/{{ i[0] }}" method="POST">
+Muokkaa ilmoitusta tästä
+<input type="submit" value="Muokkaa ilmoitusta">
+</form>
+{% endfor %}
 <br>
 {% endif %}
 <a href="/">Palaa takaisin etusivulle</a>

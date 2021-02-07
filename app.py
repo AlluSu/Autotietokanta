@@ -130,7 +130,7 @@ def logout():
 @app.route("/ad/<int:id>")
 def ad_page(id):
     #Ad info
-    sql = "SELECT info, created, user_id, car_id FROM ads WHERE id=:id"
+    sql = "SELECT id, info, created, user_id, car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     ad_data = result.fetchall()
 
@@ -199,10 +199,47 @@ def update_user_info():
     db.session.commit()
     return redirect("/userinfo")
 
-@app.route("/remove_ad", methods=["POST"])
-def remove_ad():
-    sql = "UPDATE ads SET visible=False WHERE user_id=:logged"
-    print(user_id())
-    db.session.execute(sql, {"logged":user_id()})
+@app.route("/remove_ad/<int:id>", methods=["POST"])
+def remove_ad(id):
+    sql = "UPDATE ads SET visible=False WHERE user_id=:logged AND ads.id=:id"
+    #print(user_id())
+    db.session.execute(sql, {"logged":user_id(), "id":id})
+    db.session.commit()
+    return redirect("/")
+
+@app.route("/update_car_info/<int:id>", methods=["GET","POST"])
+def edit_car_info(id):
+    sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible"
+    result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True})
+    ad_data = result.fetchall()
+    print(ad_data)
+    db.session.commit()
+    return render_template("car_data.html", data=ad_data)
+
+@app.route("/update/<int:id>", methods=["POST"])
+def update(id):
+    brand = request.form["brand"]
+    model = request.form["model"]
+    chassis = request.form["chassis"]
+    fuel = request.form["fuel"]
+    drive = request.form["drive"]
+    transmission = request.form["transmission"]
+    mileage = request.form["mileage"]
+    year = request.form["year"]
+    price = request.form["price"]
+    color = request.form["color"]
+    engine = request.form["engine"]
+    power = request.form["power"]
+    legal = request.form["legal"]
+    info = request.form["info"]
+
+    #car data
+    sql = "UPDATE cars SET brand=:brand, model=:model, chassis=:chassis, fuel=:fuel, drive=:drive, transmission=:transmission, mileage=:mileage, year=:year, price=:price, color=:color, engine=:engine, power=:power, street_legal=:legal WHERE id=:id"
+    db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis, "fuel":fuel, "drive":drive, "transmission":transmission, "mileage":mileage, "year":year, "price":price, "color":color, "engine":engine, "power":power, "legal":legal, "id":id})
+    
+    #ad data
+    sql = "UPDATE ads SET info=:info WHERE ads.car_id=:id"
+    db.session.execute(sql, {"info":info, "id":id})
+
     db.session.commit()
     return redirect("/")
