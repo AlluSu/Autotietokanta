@@ -207,7 +207,7 @@ def remove_ad(id):
     db.session.commit()
     return redirect("/")
 
-@app.route("/update_car_info/<int:id>", methods=["GET","POST"])
+@app.route("/update_car_info/<int:id>", methods=["POST"])
 def edit_car_info(id):
     sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible"
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True})

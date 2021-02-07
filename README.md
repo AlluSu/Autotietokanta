@@ -15,7 +15,7 @@ tietoihin. Jos käyttäjä ei ole kirjautuneena, tarjotaan mahdollisuus kirjautu
 #### Käyttäjän luominen  
 Uuden käyttäjän luominen näyttää seuraavalta:  
 ![new_user](photos/new_user.png)  
-Käyttäjä voi syöttää tiedot lomakkeelle jonka perusteella luodaan käyttäjä. Kaikki kentät on pakollista täyttää ja tämä on määritelty HTML-tiedostossta attribuutilla *required*.
+Käyttäjä voi syöttää tiedot lomakkeelle jonka perusteella luodaan käyttäjä. Kaikki kentät on pakollista täyttää ja tämä on määritelty HTML-tiedostossta attribuutilla *required*.  
 
 
 #### Kirjautuminen  
