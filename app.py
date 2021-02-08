@@ -197,7 +197,7 @@ def update_user_info():
     sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, location=:location WHERE id=:id"
     db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone, "email":email, "location":location})
     db.session.commit()
-    return redirect("/userinfo")
+    return redirect("/")
 
 @app.route("/remove_ad/<int:id>", methods=["POST"])
 def remove_ad(id):
@@ -208,12 +208,14 @@ def remove_ad(id):
 
 @app.route("/update_car_info/<int:id>", methods=["POST"])
 def edit_car_info(id):
+    print(id)
     sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible"
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True})
-    ad_data = result
-    print(ad_data)
+    ad_data = result.fetchall()
+    print(ad_data[0])
+    print(ad_data[1])
     db.session.commit()
-    return render_template("car_data.html", data=ad_data)
+    return render_template("car_data.html", data=ad_data[1])
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
