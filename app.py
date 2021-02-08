@@ -208,15 +208,9 @@ def remove_ad(id):
 
 @app.route("/update_car_info/<int:id>", methods=["POST"])
 def edit_car_info(id):
-    print(id)
-    sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible"
-    result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True})
+    sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
+    result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True, "car_id":id})
     ad_data = result.fetchall()
-    if len(ad_data) < 2:
-        print(ad_data[0])
-    else:
-        print(ad_data[0])
-        print(ad_data[1])
     db.session.commit()
     return render_template("car_data.html", data=ad_data)
 
