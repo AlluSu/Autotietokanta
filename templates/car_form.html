@@ -87,8 +87,8 @@ Raksi varusteet:
 <ul style="list-style-type:none;">
     {% for i in equipment %}
 <li>
-    <input type="checkbox" id="1" name="varusteet" value="{{ i[0] }}">
-    <label for="varusteet">{{ i[0] }}</label>
+    <input type="checkbox" id="{{ i[1] }}" name="eq" value="{{ i[1] }}">
+    <label for="eq">{{ i[1] }}</label>
 </li>
 {% endfor %}
 </ul>

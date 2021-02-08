@@ -54,7 +54,7 @@ def logged_user():
 
 @app.route("/new")
 def new_car_form():
-    sql = "SELECT name FROM equipment"
+    sql = "SELECT id, name FROM equipment"
     result = db.session.execute(sql)
     equipment = result.fetchall()
     print(equipment)
@@ -98,6 +98,22 @@ def send():
     power = request.form["power"]
     legal = request.form["legal"]
 
+    #Equipment as list
+    equipment_list = request.form.getlist("eq")
+
+    #Equipment as dictionary
+    sql = "SELECT * FROM Equipment"
+    result = db.session.execute(sql)
+    eq = result.fetchall()
+    db.session.commit()
+    print(eq)
+    print(equipment_list)
+    eq_dict = {}
+    for i in range(0, len(equipment_list)):
+        eq_dict[i] = equipment_list[i]
+    print(eq_dict)
+    #TODO: Built a custom dictionary for each car and its equipment!
+
     #Car data
     sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, street_legal) VALUES (:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, :engine, :power, :street_legal) RETURNING id"
     result = db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis,
@@ -119,7 +135,22 @@ def send():
     db.session.execute(sql, {"car_id":car_id, "ad_id":ad_id})
     db.session.commit()
 
+    #Creating a reference between car_id and equipment_id
+    sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
+    for name in eq_dict:
+        eq = eq_dict[name]
+        print(eq)
+        result = db.session.execute(sql, {"car_id":car_id, "equipment_id":get_equipment_id_by_name(eq)})
+    db.session.commit()
+
     return redirect("/")
+
+def get_equipment_id_by_name(name):
+    sql = "SELECT id FROM equipment WHERE name=:name"
+    result = db.session.execute(sql, {"name":name})
+    name = result.fetchone()[0]
+    db.session.commit()
+    return name
 
 @app.route("/logout")
 def logout():
@@ -153,6 +184,9 @@ def ad_page(id):
     sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
     result = db.session.execute(sql, {"id":seller_id})
     seller_data = result.fetchall()
+
+    #TODO: Equipment
+    #sql = "SELECT e.name FROM equipment e, car_equipment"
 
     return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id)
 
