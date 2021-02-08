@@ -212,10 +212,13 @@ def edit_car_info(id):
     sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible"
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True})
     ad_data = result.fetchall()
-    print(ad_data[0])
-    print(ad_data[1])
+    if len(ad_data) < 2:
+        print(ad_data[0])
+    else:
+        print(ad_data[0])
+        print(ad_data[1])
     db.session.commit()
-    return render_template("car_data.html", data=ad_data[1])
+    return render_template("car_data.html", data=ad_data)
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
