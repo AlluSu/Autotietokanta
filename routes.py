@@ -10,7 +10,8 @@ def create_session_token():
 
 @app.route("/")
 def index():
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM " \
+          "cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
     result = db.session.execute(sql)
     cars = result.fetchall()
     sql = "SELECT id FROM ads WHERE user_id=:id AND visible=:visible"
@@ -82,17 +83,21 @@ def send():
         eq_dict[i] = equipment_list[i]
 
     #Car data
-    sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, street_legal) VALUES (:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, :engine, :power, :street_legal) RETURNING id"
+    sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, " \
+          "color, engine, power, street_legal) VALUES " \
+          "(:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, " \
+          ":engine, :power, :street_legal) RETURNING id"
     result = db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis,
-    "fuel":fuel, "drive":drive, "transmission":transmission, "mileage":mileage,
-    "year":year, "price":price, "color":color, "engine":engine, "power":power,
-    "street_legal":legal})
+                                      "fuel":fuel, "drive":drive, "transmission":transmission,
+                                      "mileage":mileage, "year":year, "price":price, "color":color,
+                                      "engine":engine, "power":power, "street_legal":legal})
     car_id = result.fetchone()[0]
     db.session.commit()
 
     #Ad data
     info = request.form["info"]
-    sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES (:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
+    sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES " \
+          "(:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
     result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id(), "car_id":car_id})
     ad_id = result.fetchone()[0]
     db.session.commit()
@@ -108,7 +113,6 @@ def send():
         eq = eq_dict[name]
         result = db.session.execute(sql, {"car_id":car_id, "equipment_id":get_equipment_id_by_name(eq)})
     db.session.commit()
-
     return redirect("/")
 
 def get_equipment_id_by_name(name):
@@ -155,7 +159,8 @@ def ad_page(id):
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
     result = db.session.execute(sql, {"id": car_id})
     cars_equipment = result.fetchall()
-    return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id, equipment=cars_equipment)
+    return render_template("ad_info.html",
+    specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id, equipment=cars_equipment)
 
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -172,8 +177,10 @@ def create_new_user():
     email = request.form["email"]
     hash_value = generate_password_hash(password)
     try:
-        sql = "INSERT INTO users (username, firstname, surname, telephone, email, location, admin, password) VALUES (:username, :firstname, :surname, :telephone, :email, :location, :admin, :password)"
-        db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name,"telephone":phone,"email":email, "location":location, "admin":False, "password":hash_value})
+        sql = "INSERT INTO users (username, firstname, surname, telephone, email, location, admin, password) " \
+              "VALUES (:username, :firstname, :surname, :telephone, :email, :location, :admin, :password)"
+        db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name,
+                                 "telephone":phone,"email":email, "location":location, "admin":False, "password":hash_value})
         db.session.commit()
         return redirect("/")
     except:
@@ -194,8 +201,10 @@ def update_user_info():
     location = request.form["location"]
     phone = request.form["tel"]
     email = request.form["email"]
-    sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, location=:location WHERE id=:id"
-    db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone, "email":email, "location":location})
+    sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
+          "location=:location WHERE id=:id"
+    db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone,
+                             "email":email, "location":location})
     db.session.commit()
     return redirect("/")
 
@@ -208,7 +217,9 @@ def remove_ad(id):
 
 @app.route("/update_car_info/<int:id>", methods=["POST"])
 def edit_car_info(id):
-    sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
+    sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, " \
+          "c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE " \
+          "c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True, "car_id":id})
     ad_data = result.fetchall()
 
@@ -223,7 +234,8 @@ def edit_car_info(id):
     equipment = result.fetchall()
 
     db.session.commit()
-    return render_template("car_data.html", data=ad_data, equipment=all_equipment, car_spesific_equipment=equipment)
+    return render_template("car_data.html", data=ad_data, equipment=all_equipment,
+    car_spesific_equipment=equipment)
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
@@ -246,8 +258,12 @@ def update(id):
     eq = request.form.getlist("varusteet")
 
     #car data
-    sql = "UPDATE cars SET brand=:brand, model=:model, chassis=:chassis, fuel=:fuel, drive=:drive, transmission=:transmission, mileage=:mileage, year=:year, price=:price, color=:color, engine=:engine, power=:power, street_legal=:legal WHERE id=:id"
-    db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis, "fuel":fuel, "drive":drive, "transmission":transmission, "mileage":mileage, "year":year, "price":price, "color":color, "engine":engine, "power":power, "legal":legal, "id":id})
+    sql = "UPDATE cars SET brand=:brand, model=:model, chassis=:chassis, fuel=:fuel, drive=:drive, " \
+          "transmission=:transmission, mileage=:mileage, year=:year, price=:price, color=:color, " \
+          "engine=:engine, power=:power, street_legal=:legal WHERE id=:id"
+    db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis, "fuel":fuel, "drive":drive,
+                             "transmission":transmission, "mileage":mileage, "year":year, "price":price,
+                             "color":color, "engine":engine, "power":power, "legal":legal, "id":id})
     
     #ad data
     sql = "UPDATE ads SET info=:info WHERE ads.car_id=:id"
@@ -266,7 +282,8 @@ def update(id):
 @app.route("/search", methods=["GET"])
 def result():
     query = request.args["query"]
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, a.id, a.info FROM cars c, ads a WHERE a.info LIKE :query AND visible=:visible"
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, a.id, a.info FROM cars c, ads a WHERE " \
+          "a.info LIKE :query AND visible=:visible"
     result = db.session.execute(sql, {"query":"%"+query+"%", "visible":True})
     ads = result.fetchall()
     return render_template("index.html", cars=ads)
@@ -274,57 +291,58 @@ def result():
 @app.route("/sort", methods=["GET"])
 def sort():
     option = request.args["options"]
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+          "c.id=a.car_id AND a.visible=True"
     result = db.session.execute(sql)
     ads = result.fetchall()
     db.session.commit()
-    if option == 'year':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY year"
+    if option == "year":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY year"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
-    if option == 'year DESC':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY year DESC"
+    if option == "year DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY year DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
-    if option == 'brand':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY brand"
+    if option == "brand":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY brand"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
-    if option == 'brand DESC':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY brand DESC"
+    if option == "brand DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY brand DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
-    if option == 'mileage':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY mileage"
+    if option == "mileage":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY mileage"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
-    if option == 'mileage DESC':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY mileage DESC"
+    if option == "mileage DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY mileage DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
-    if option == 'price':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY price"
+    if option == "price":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY price"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
-    if option == 'price DESC':
-        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY price DESC"
+    if option == "price DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY price DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        print(ads)
         return render_template("/index.html", cars=ads)
     else:
         return render_template("/index.html", cars=ads)

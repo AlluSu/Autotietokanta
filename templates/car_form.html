@@ -32,23 +32,23 @@ Käyttövoima:
 <input type="radio" id="diesel" name="fuel" value="Diesel">
 <label for="diesel">Diesel</label>
 <input type="radio" id="re85" name="fuel" value="Re85">
-<label for="gasoline">RE85</label>
+<label for="re85">RE85</label>
 <input type="radio" id="electricity" name="fuel" value="Sähkö">
 <label for="electricity">Sähkö</label>
 <br>
 Vetotapa:
 <input type="radio" id="rear" name="drive" value="Takaveto" checked>
-<label for="rear-wheel-drive">Takaveto</label>
+<label for="rear">Takaveto</label>
 <input type="radio" id="front" name="drive" value="Etuveto">
-<label for="front-wheel-drive">Etuveto</label>
+<label for="front">Etuveto</label>
 <input type="radio" id="four" name="drive" value="Neliveto">
-<label for="four-wheel-drive">Neliveto</label>
+<label for="four">Neliveto</label>
 <br>
 Vaihteisto:
 <input type="radio" id="manual" name="transmission" value="Manuaali" checked>
-<label for="manual-transmission">Manuaali</label>
+<label for="manual">Manuaali</label>
 <input type="radio" id="automatic" name="transmission" value="Automaatti">
-<label for="automatic-transmission">Automaatti</label>
+<label for="automatic">Automaatti</label>
 <br>
 Mittarilukema:
 <input type="number" name="mileage" min="0" max="10000000" required>
@@ -74,7 +74,7 @@ Teho:
 <br>
 Tieliikennekelpoisuus:
 <input type="radio" id="notlegal" name="legal" value="0">
-<label for="legal">Ei tieliikennekelpoinen</label>
+<label for="notlegal">Ei tieliikennekelpoinen</label>
 <input type="radio" id="legal" name="legal" value="1" checked>
 <label for="legal">Tieliikennekelpoinen</label>
 <br>
@@ -87,8 +87,8 @@ Raksi varusteet:
 <ul style="list-style-type:none;">
     {% for i in equipment %}
 <li>
-    <input type="checkbox" id="{{ i[1] }}" name="eq" value="{{ i[1] }}">
-    <label for="eq">{{ i[1] }}</label>
+    <input type="checkbox" id="{{ i[0] }}" name="eq" value="{{ i[1] }}">
+    <label for="{{ i[0] }}">{{ i[1] }}</label>
 </li>
 {% endfor %}
 </ul>
