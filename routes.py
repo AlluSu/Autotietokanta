@@ -345,5 +345,17 @@ def sort():
         result = db.session.execute(sql)
         ads = result.fetchall()
         return render_template("/index.html", cars=ads)
+    if option == "created":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY created"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        return render_template("/index.html", cars=ads)
+    if option == "created DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY created DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        return render_template("/index.html", cars=ads)    
     else:
         return render_template("/index.html", cars=ads)
