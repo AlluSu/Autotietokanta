@@ -282,10 +282,11 @@ def update(id):
 @app.route("/search", methods=["GET"])
 def result():
     query = request.args["query"]
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, a.id, a.info FROM cars c, ads a WHERE " \
-          "a.info LIKE :query AND visible=:visible"
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+          "a.info LIKE :query AND a.visible=:visible"
     result = db.session.execute(sql, {"query":"%"+query+"%", "visible":True})
     ads = result.fetchall()
+    print(ads)
     return render_template("index.html", cars=ads)
 
 @app.route("/sort", methods=["GET"])

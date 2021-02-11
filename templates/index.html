@@ -34,17 +34,6 @@ Hae ilmoituksista hakusanalla:
     <br>
     <input type="submit" value="Lähetä">
 </form>
-{% if search_results %}
-Hakua vastaavat ilmoitukset:
-{% for result in search_results %}
-<br>
-<b>Merkki: </b> {{ result[0] }} <br>
-<b>Malli: </b> {{ result[1] }} <br>
-<b>Vuosimalli: </b> {{ result[2] }} <br>
-<b>Mittarilukema: </b> {{ result[3] }} <br>
-<a href="ad/{{ result[4] }}">Mene ilmoitukseen</a>
-{% endfor %}
-{% endif %}
 Myytävät autot:
 <hr>
 {% for car in cars %}
