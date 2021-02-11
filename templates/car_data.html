@@ -2,6 +2,27 @@
 <form action="/update/{{ i[0] }}" method="POST">
     <p>
         Muokkaa ilmoituksen tietoja:
+        <br>
+        <b>HUOMIO! TARKASTA ETTÄ
+            <ul>
+                <li>
+                    KORIMALLI
+                </li>
+                <li>
+                    KÄYTTÖVOIMA
+                </li>
+                <li>
+                    VETOTAPA
+                </li>
+                <li>
+                    VAIHTEISTO
+                </li>
+                <li>
+                    VARUSTELISTA
+                </li>
+            </ul>
+            OVAT OIKEIN!
+        </b>
     </p>
     Merkki:
     <input type="text" name="brand" value="{{ i[1] }}" required>
@@ -33,17 +54,17 @@
     <input type="radio" id="diesel" name="fuel" value="Diesel">
     <label for="diesel">Diesel</label>
     <input type="radio" id="re85" name="fuel" value="Re85">
-    <label for="gasoline">RE85</label>
+    <label for="re85">RE85</label>
     <input type="radio" id="electricity" name="fuel" value="Sähkö">
     <label for="electricity">Sähkö</label>
     <br>
     Vetotapa:
     <input type="radio" id="rear" name="drive" value="Takaveto" checked>
-    <label for="rear-wheel-drive">Takaveto</label>
+    <label for="rear">Takaveto</label>
     <input type="radio" id="front" name="drive" value="Etuveto">
-    <label for="front-wheel-drive">Etuveto</label>
+    <label for="front">Etuveto</label>
     <input type="radio" id="four" name="drive" value="Neliveto">
-    <label for="four-wheel-drive">Neliveto</label>
+    <label for="four">Neliveto</label>
     <br>
     Vaihteisto:
     <input type="radio" id="manual" name="transmission" value="Manuaali" checked>
@@ -75,7 +96,7 @@
     <br>
     Tieliikennekelpoisuus:
     <input type="radio" id="notlegal" name="legal" value="0">
-    <label for="legal">Ei tieliikennekelpoinen</label>
+    <label for="notlegal">Ei tieliikennekelpoinen</label>
     <input type="radio" id="legal" name="legal" value="1" checked>
     <label for="legal">Tieliikennekelpoinen</label>
     <br>
@@ -86,13 +107,13 @@
     </textarea>
     <br>
     {% endfor %}
-    Raksi varusteet:
+    <b>Raksi varusteet:</b>
     <br>
     <ul style="list-style-type:none;">
         {% for e in equipment %}
     <li>
-        <input type="checkbox" id="1" name="varusteet" value="{{ e[0] }}">
-        <label for="varusteet">{{ e[0] }}</label>
+        <input type="checkbox" id="{{ e[0] }}" name="varusteet" value="{{ e[1] }}">
+        <label for="{{ e[0] }}">{{ e[1] }}</label>
     </li>
     {% endfor %}
     </ul>

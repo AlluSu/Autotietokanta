@@ -18,7 +18,6 @@ def index():
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
     result = db.session.execute(sql)
     cars = result.fetchall()
-
     sql = "SELECT id FROM ads WHERE user_id=:id AND visible=:visible"
     result = db.session.execute(sql, {"id":user_id(), "visible":True})
     owner_id = result.fetchone()
@@ -101,7 +100,7 @@ def send():
     #Equipment as list
     equipment_list = request.form.getlist("eq")
 
-    #Equipment as dictionary
+    # Custom dictionary for each car and its equipment!
     sql = "SELECT * FROM Equipment"
     result = db.session.execute(sql)
     eq = result.fetchall()
@@ -112,7 +111,6 @@ def send():
     for i in range(0, len(equipment_list)):
         eq_dict[i] = equipment_list[i]
     print(eq_dict)
-    #TODO: Built a custom dictionary for each car and its equipment!
 
     #Car data
     sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, street_legal) VALUES (:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, :engine, :power, :street_legal) RETURNING id"
@@ -185,10 +183,11 @@ def ad_page(id):
     result = db.session.execute(sql, {"id":seller_id})
     seller_data = result.fetchall()
 
-    #TODO: Equipment
-    #sql = "SELECT e.name FROM equipment e, car_equipment"
-
-    return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id)
+    #Equipment info
+    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
+    result = db.session.execute(sql, {"id": car_id})
+    cars_equipment = result.fetchall()
+    return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id, equipment=cars_equipment)
 
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -245,8 +244,19 @@ def edit_car_info(id):
     sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True, "car_id":id})
     ad_data = result.fetchall()
+
+    #All equipment
+    sql = "SELECT * FROM equipment"
+    result = db.session.execute(sql)
+    all_equipment = result.fetchall()
+
+    #Car spesific equipment
+    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
+    result = db.session.execute(sql, {"id":id})
+    equipment = result.fetchall()
+
     db.session.commit()
-    return render_template("car_data.html", data=ad_data)
+    return render_template("car_data.html", data=ad_data, equipment=all_equipment, car_spesific_equipment=equipment)
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
@@ -265,6 +275,9 @@ def update(id):
     legal = request.form["legal"]
     info = request.form["info"]
 
+    # checked equipment as list
+    eq = request.form.getlist("varusteet")
+
     #car data
     sql = "UPDATE cars SET brand=:brand, model=:model, chassis=:chassis, fuel=:fuel, drive=:drive, transmission=:transmission, mileage=:mileage, year=:year, price=:price, color=:color, engine=:engine, power=:power, street_legal=:legal WHERE id=:id"
     db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis, "fuel":fuel, "drive":drive, "transmission":transmission, "mileage":mileage, "year":year, "price":price, "color":color, "engine":engine, "power":power, "legal":legal, "id":id})
@@ -272,6 +285,13 @@ def update(id):
     #ad data
     sql = "UPDATE ads SET info=:info WHERE ads.car_id=:id"
     db.session.execute(sql, {"info":info, "id":id})
+
+    #Equipment data
+    sql = "DELETE FROM car_equipment WHERE car_id=:id"
+    db.session.execute(sql, {"id":id})
+    for i in eq:
+        sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
+        db.session.execute(sql, {"car_id":id, "equipment_id":get_equipment_id_by_name(i)})
 
     db.session.commit()
     return redirect("/")
