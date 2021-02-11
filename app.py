@@ -32,7 +32,7 @@ def login_as_user():
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
-        return render_template("error.html", user=username)
+        return render_template("error.html")
     else:
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
