@@ -13,13 +13,46 @@ Kirjaudu sisään <a href="/login">tästä</a>:
 Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 <br>
 {% endif %}
+<form action="/sort" method="GET">
+<label for="options">Lajittele:</label>
+<select name="options" id="cars">
+    <option value="none"></option>
+    <option value="brand">Merkki: (A-Z)</option>
+    <option value="brand DESC">Merkki: (Z-A)</option>
+    <option value="year">Vuosimalli: (Vanhin ensin)</option>
+    <option value="year DESC">Vuosimalli: (Uusin ensin)</option>
+    <option value="mileage">Kilometrit: (Vähän ajetut ensin)</option>
+    <option value="mileage DESC">Kilometrit: (Paljon ajetut ensin)</option>
+    <option value="price">Hinta: (halvimmat ensin)</option>
+    <option value="price DESC">Hinta: (kalleimmat ensin)</option>
+</select>
+<input type="submit" value="Lajittele">
+</form>
+Hae ilmoituksista hakusanalla:
+<form action="/search" method="GET">
+    Hakusana: <input type="text" name="query">
+    <br>
+    <input type="submit" value="Lähetä">
+</form>
+{% if search_results %}
+Hakua vastaavat ilmoitukset:
+{% for result in search_results %}
+<br>
+<b>Merkki: </b> {{ result[0] }} <br>
+<b>Malli: </b> {{ result[1] }} <br>
+<b>Vuosimalli: </b> {{ result[2] }} <br>
+<b>Mittarilukema: </b> {{ result[3] }} <br>
+<a href="ad/{{ result[4] }}">Mene ilmoitukseen</a>
+{% endfor %}
+{% endif %}
 Myytävät autot:
 <hr>
 {% for car in cars %}
-Merkki: {{ car[1] }}<br>
-Malli: {{ car[2] }}<br>
-Mittarilukema: {{ car[3] }}<br>
-Vuosimalli: {{ car[4] }}<br>
+<b>Merkki:</b> {{ car[1] }}<br>
+<b>Malli:</b> {{ car[2] }}<br>
+<b>Mittarilukema:</b> {{ car[3] }}<br>
+<b>Vuosimalli:</b> {{ car[4] }}<br>
+<b>Hinta:</b> {{ car[5] }} €<br>
 <a href="/ad/{{ car[0] }}">Mene ilmoitukseen</a>
 <hr>
 {% endfor %}

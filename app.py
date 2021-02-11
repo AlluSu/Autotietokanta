@@ -15,7 +15,7 @@ def create_session_token():
 
 @app.route("/")
 def index():
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
     result = db.session.execute(sql)
     cars = result.fetchall()
 
@@ -275,3 +275,69 @@ def update(id):
 
     db.session.commit()
     return redirect("/")
+
+@app.route("/search", methods=["GET"])
+def result():
+    query = request.args["query"]
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, a.id, a.info FROM cars c, ads a WHERE a.info LIKE :query AND visible=:visible"
+    result = db.session.execute(sql, {"query":"%"+query+"%", "visible":True})
+    ads = result.fetchall()
+    return render_template("index.html", cars=ads)
+
+@app.route("/sort", methods=["GET"])
+def sort():
+    option = request.args["options"]
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
+    result = db.session.execute(sql)
+    ads = result.fetchall()
+    db.session.commit()
+    if option == 'year':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY year"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    if option == 'year DESC':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY year DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    if option == 'brand':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY brand"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    if option == 'brand DESC':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY brand DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    if option == 'mileage':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY mileage"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    if option == 'mileage DESC':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY mileage DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    if option == 'price':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY price"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    if option == 'price DESC':
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE c.id=a.car_id AND a.visible=True ORDER BY price DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        print(ads)
+        return render_template("/index.html", cars=ads)
+    else:
+        return render_template("/index.html", cars=ads)
