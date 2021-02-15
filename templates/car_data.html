@@ -107,7 +107,14 @@
     </textarea>
     <br>
     {% endfor %}
-    <b>Raksi varusteet:</b>
+    <br>
+    <b>Viimeeksi merkityt varusteet:</b>
+    <br>
+    {% for i in car_spesific_equipment %}
+    {{ i[0] }}
+    <br>
+    {% endfor %}
+    <b>Merkitse varusteet:</b>
     <br>
     <ul style="list-style-type:none;">
         {% for e in equipment %}
