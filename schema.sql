@@ -64,3 +64,14 @@ CREATE TABLE car_equipment (
     car_id INTEGER REFERENCES cars,
     equipment_id INTEGER REFERENCES equipment
 );
+
+CREATE TABLE images (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    data BYTEA
+);
+
+CREATE TABLE ad_images (
+    image_id INTEGER REFERENCES images,
+    ad_id INTEGER REFERENCES ads
+);

@@ -11,12 +11,14 @@ def create_session_token():
 @app.route("/")
 def index():
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM " \
-          "cars c, ads a WHERE c.id=a.car_id AND a.visible=True"
+          "cars c, ads a WHERE c.id=a.car_id " \
+          "AND a.visible=True"
     result = db.session.execute(sql)
     cars = result.fetchall()
     sql = "SELECT id FROM ads WHERE user_id=:id AND visible=:visible"
     result = db.session.execute(sql, {"id":user_id(), "visible":True})
     owner_id = result.fetchone()
+    db.session.commit()
     return render_template("index.html", cars=cars, owner=owner_id)
 
 @app.route("/login_user", methods=["POST"])
@@ -27,14 +29,14 @@ def login_as_user():
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if user == None:
-        return render_template("error.html")
+        return render_template("error.html", error="Tarkista käyttäjätunnus ja salasana!")
     else:
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
             session["username"] = username
             return redirect("/")
         else:
-            return render_template("error.html")
+            return render_template("error.html", error="Tarkista käyttäjätunnus ja salasana!")
 
 
 @app.route("/login", methods=["GET"])
@@ -87,15 +89,17 @@ def send():
           "color, engine, power, street_legal) VALUES " \
           "(:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, " \
           ":engine, :power, :street_legal) RETURNING id"
-    result = db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis,
+    result = db.session.execute(sql, {"brand":brand.strip(), "model":model.strip(), "chassis":chassis,
                                       "fuel":fuel, "drive":drive, "transmission":transmission,
-                                      "mileage":mileage, "year":year, "price":price, "color":color,
+                                      "mileage":mileage, "year":year, "price":price, "color":color.strip(),
                                       "engine":engine, "power":power, "street_legal":legal})
     car_id = result.fetchone()[0]
     db.session.commit()
 
     #Ad data
     info = request.form["info"]
+    if len(info) > 5000:
+        return render_template("error.html", error="Teksti on liian pitkä")
     sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES " \
           "(:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
     result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id(), "car_id":car_id})
@@ -113,6 +117,28 @@ def send():
         eq = eq_dict[name]
         result = db.session.execute(sql, {"car_id":car_id, "equipment_id":get_equipment_id_by_name(eq)})
     db.session.commit()
+
+    #Image file data
+    file = request.files["file"]
+    print("name", file.filename)
+    print("length", len(file.read()),"bytes")
+    name = file.filename
+    if not name.endswith(".jpg"):
+        error = "Väärä tiedostopääte"
+        return render_template("error.html", error=error)
+    data = file.read()
+    if len(data) > 100*1024:
+        error = "Liian iso tiedosto"
+    sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
+    result = db.session.execute(sql, {"name":name, "data":data})
+    image_id = result.fetchone()[0]
+    db.session.commit()
+
+    #Creating a relation between the image and the ad
+    sql = "INSERT INTO ad_images (image_id,ad_id) VALUES (:image_id,:ad_id)"
+    db.session.execute(sql, {"image_id":image_id, "ad_id":ad_id})
+    db.session.commit()
+
     return redirect("/")
 
 def get_equipment_id_by_name(name):
@@ -159,6 +185,9 @@ def ad_page(id):
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
     result = db.session.execute(sql, {"id": car_id})
     cars_equipment = result.fetchall()
+
+    db.session.commit()
+
     return render_template("ad_info.html",
     specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id, equipment=cars_equipment)
 
@@ -169,9 +198,17 @@ def register():
 @app.route("/new_user", methods=["GET","POST"])
 def create_new_user():
     username = request.form["username"]
+    if len(username.strip()) < 1:
+        return render_template("error.html", error="Nimi ei voi olla tyhjä merkkijono!")
     password = request.form["password"]
+    if len(password.strip()) < 1:
+        return render_template("error.html", error="Salasana ei voi olla tyhjä merkkijono!")
     first_name = request.form["fname"]
+    if len(first_name.strip()) < 1:
+        return render_template("error.html", error="Nimi ei saa olla tyhjä")
     last_name = request.form["sname"]
+    if len(last_name.strip()) < 1:
+        return render_template("error.html", error="Sukunimi ei voi olla tyhjä!")
     location = request.form["location"]
     phone = request.form["tel"]
     email = request.form["email"]
@@ -180,11 +217,11 @@ def create_new_user():
         sql = "INSERT INTO users (username, firstname, surname, telephone, email, location, admin, password) " \
               "VALUES (:username, :firstname, :surname, :telephone, :email, :location, :admin, :password)"
         db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name,
-                                 "telephone":phone,"email":email, "location":location, "admin":False, "password":hash_value})
+                                 "telephone":phone.strip(),"email":email.strip(), "location":location.strip(), "admin":False, "password":hash_value})
         db.session.commit()
         return redirect("/")
     except:
-        return render_template("error.html")
+        return render_template("error.html", error="Tapahtui virhe!")
 
 @app.route("/userinfo", methods=["GET", "POST"])
 def show_user_data():
@@ -203,8 +240,8 @@ def update_user_info():
     email = request.form["email"]
     sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
           "location=:location WHERE id=:id"
-    db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone,
-                             "email":email, "location":location})
+    db.session.execute(sql, {"id":user_id(), "firstname":first_name.strip(), "surname":last_name.strip(), "telephone":phone.strip(),
+                             "email":email.strip(), "location":location.strip()})
     db.session.commit()
     return redirect("/")
 
@@ -240,7 +277,11 @@ def edit_car_info(id):
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
     brand = request.form["brand"]
+    if len(brand.strip()) < 1:
+        return render_template("error.html", error="Merkki ei voi olla tyhjä!")
     model = request.form["model"]
+    if len(model.strip()) < 1:
+        return render_template("error.html", error="Malli ei voi olla tyhjä!")
     chassis = request.form["chassis"]
     fuel = request.form["fuel"]
     drive = request.form["drive"]
@@ -249,10 +290,14 @@ def update(id):
     year = request.form["year"]
     price = request.form["price"]
     color = request.form["color"]
+    if len(color.strip()) < 1:
+        return render_template("error.html", error="Väri ei voi olla tyhjä!")
     engine = request.form["engine"]
     power = request.form["power"]
     legal = request.form["legal"]
     info = request.form["info"]
+    if len(info.strip()) > 5000:
+        return render_template("error.html", error="Liikaa tekstiä tekstikentässä!")
 
     # checked equipment as list
     eq = request.form.getlist("varusteet")
@@ -261,13 +306,13 @@ def update(id):
     sql = "UPDATE cars SET brand=:brand, model=:model, chassis=:chassis, fuel=:fuel, drive=:drive, " \
           "transmission=:transmission, mileage=:mileage, year=:year, price=:price, color=:color, " \
           "engine=:engine, power=:power, street_legal=:legal WHERE id=:id"
-    db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis, "fuel":fuel, "drive":drive,
+    db.session.execute(sql, {"brand":brand.strip(), "model":model.strip(), "chassis":chassis, "fuel":fuel, "drive":drive,
                              "transmission":transmission, "mileage":mileage, "year":year, "price":price,
-                             "color":color, "engine":engine, "power":power, "legal":legal, "id":id})
+                             "color":color.strip(), "engine":engine, "power":power, "legal":legal, "id":id})
     
     #ad data
     sql = "UPDATE ads SET info=:info WHERE ads.car_id=:id"
-    db.session.execute(sql, {"info":info, "id":id})
+    db.session.execute(sql, {"info":info.strip(), "id":id})
 
     #Equipment data
     sql = "DELETE FROM car_equipment WHERE car_id=:id"
@@ -284,9 +329,8 @@ def result():
     query = request.args["query"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "a.info LIKE :query AND a.visible=:visible"
-    result = db.session.execute(sql, {"query":"%"+query+"%", "visible":True})
+    result = db.session.execute(sql, {"query":'%'+query+'%', "visible":True})
     ads = result.fetchall()
-    print(ads)
     return render_template("index.html", cars=ads)
 
 @app.route("/sort", methods=["GET"])
