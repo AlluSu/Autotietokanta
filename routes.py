@@ -56,6 +56,25 @@ def get_all_car_equipment():
     equipment = result.fetchall()
     return equipment
 
+def get_car_equipment_by_id(id):
+    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
+    result = db.session.execute(sql, {"id":id})
+    equipment = result.fetchall()
+    return equipment
+
+def get_equipment_id_by_name(name):
+    sql = "SELECT id FROM equipment WHERE name=:name"
+    result = db.session.execute(sql, {"name":name})
+    name = result.fetchone()[0]
+    db.session.commit()
+    return name
+
+def get_user_info_by_id(id):
+    sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    info = result.fetchall()
+    return info
+
 @app.route("/new")
 def new_car_form():
 
@@ -89,10 +108,7 @@ def send():
     equipment_list = request.form.getlist("eq")
 
     # Custom dictionary for each car and its equipment
-    sql = "SELECT * FROM Equipment"
-    result = db.session.execute(sql)
-    eq = result.fetchall()
-    db.session.commit()
+    eq = get_all_car_equipment()
     eq_dict = {}
     for i in range(0, len(equipment_list)):
         eq_dict[i] = equipment_list[i]
@@ -133,10 +149,10 @@ def send():
 
     #Image file data
     file = request.files["file"]
-    print("name", file.filename)
-    print("length", len(file.read()),"bytes")
+    #print("name", file.filename)
+    #print("length", len(file.read()),"bytes")
     name = file.filename
-    if not name.endswith(".jpg"):
+    if file and not name.endswith(".jpg"):
         return render_template("error.html", error="Väärä tiedostopääte")
     data = file.read()
     if len(data) > 100*1024:
@@ -152,13 +168,6 @@ def send():
     db.session.commit()
 
     return redirect("/")
-
-def get_equipment_id_by_name(name):
-    sql = "SELECT id FROM equipment WHERE name=:name"
-    result = db.session.execute(sql, {"name":name})
-    name = result.fetchone()[0]
-    db.session.commit()
-    return name
 
 @app.route("/logout")
 def logout():
@@ -189,10 +198,11 @@ def ad_page(id):
     result = db.session.execute(sql, {"id":id}).fetchone()
     seller_id = result[0]
 
+    #TODO: REMOVE IF UNNECESSARY
     #Seller info
-    sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
-    result = db.session.execute(sql, {"id":seller_id})
-    seller_data = result.fetchall()
+    #sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
+    #result = db.session.execute(sql, {"id":seller_id})
+    #seller_data = result.fetchall()
 
     #Equipment info
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
@@ -201,7 +211,7 @@ def ad_page(id):
 
     db.session.commit()
     return render_template("ad_info.html",
-        specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id,
+        specs=car_data, info=ad_data, seller=get_user_info_by_id(id), logged=user_id(), id=seller_id,
         equipment=cars_equipment)
 
 @app.route("/ad_image/<int:id>")
@@ -247,12 +257,13 @@ def create_new_user():
     except:
         return render_template("error.html", error="Tapahtui virhe!")
 
-@app.route("/userinfo", methods=["GET", "POST"])
+@app.route("/userinfo")
 def show_user_data():
-    sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
-    result = db.session.execute(sql, {"id":user_id()})
-    user_data = result.fetchall()
-    return render_template("user_data.html", user=user_data)
+    #TODO: REMOVE IF UNNECESSARY
+    # sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
+    # result = db.session.execute(sql, {"id":user_id()})
+    # user_data = result.fetchall()
+    return render_template("user_data.html", user=get_user_info_by_id(user_id()))
 
 @app.route("/update_user_info", methods=["POST"])
 def update_user_info():
@@ -289,19 +300,21 @@ def edit_car_info(id):
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True, "car_id":id})
     ad_data = result.fetchall()
 
+    # TODO: REMOVE IF UNNECESSARY
     #All equipment
-    sql = "SELECT * FROM equipment"
-    result = db.session.execute(sql)
-    all_equipment = result.fetchall()
+    #sql = "SELECT * FROM equipment"
+    #result = db.session.execute(sql)
+    #all_equipment = result.fetchall()
 
+    # TODO: REMOVE IF UNNECESSARY
     #Car spesific equipment
-    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
-    result = db.session.execute(sql, {"id":id})
-    equipment = result.fetchall()
+    #sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
+    #result = db.session.execute(sql, {"id":id})
+    #equipment = result.fetchall()
 
     db.session.commit()
-    return render_template("car_data.html", data=ad_data, equipment=all_equipment,
-    car_spesific_equipment=equipment)
+    return render_template("car_data.html", data=ad_data, equipment=get_all_car_equipment(),
+    car_spesific_equipment=get_car_equipment_by_id(id))
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
@@ -351,14 +364,12 @@ def update(id):
     for i in eq:
         sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
         db.session.execute(sql, {"car_id":id, "equipment_id":get_equipment_id_by_name(i)})
-
     db.session.commit()
+
     return redirect("/")
 
 @app.route("/search", methods=["GET"])
 def result():
-    if session["csrf_token"] != request.form["csrf_token"]:
-        abort(403)
     query = request.args["query"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "a.info LIKE :query AND a.visible=:visible"
@@ -368,8 +379,6 @@ def result():
 
 @app.route("/sort", methods=["GET"])
 def sort():
-    if session["csrf_token"] != request.form["csrf_token"]:
-        abort(403)
     option = request.args["options"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "c.id=a.car_id AND a.visible=True"
