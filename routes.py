@@ -1,5 +1,5 @@
 from app import app
-from flask import redirect, render_template, request, session, make_response, abort
+from flask import redirect, render_template, request, session, make_response, abort, flash
 from os import urandom
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
@@ -91,7 +91,11 @@ def send():
 
     # TODO: checks?
     brand = request.form["brand"]
+    if len(brand.strip()) < 1:
+        return render_template("error.html", error="Merkki ei voi olla tyhjä!")
     model = request.form["model"]
+    if len(model.strip()) < 1:
+        return render_template("error.html", error="Malli ei voi olla tyhjä!")
     chassis = request.form["chassis"]
     fuel = request.form["fuel"]
     drive = request.form["drive"]
@@ -176,6 +180,17 @@ def logout():
     del session["csrf_token"]
     return redirect("/")
 
+def get_car_id_by_ad_id(id):
+    sql = "SELECT car_id FROM ads WHERE id=:id"
+    result = db.session.execute(sql, {"id":id}).fetchone()
+    return result[0]
+
+def get_all_car_info_by_id(id):
+    sql = "SELECT * FROM cars WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    car_data = result.fetchall()
+    return car_data
+
 @app.route("/ad/<int:id>")
 def ad_page(id):
     #Ad info
@@ -183,14 +198,15 @@ def ad_page(id):
     result = db.session.execute(sql, {"id":id})
     ad_data = result.fetchall()
 
+    #TODO: REMOVE IF UNNECESSARY
     #Car_id
-    sql = "SELECT car_id FROM ads WHERE id=:id"
-    result = db.session.execute(sql, {"id":id}).fetchone()
-    car_id = result[0]
+    #sql = "SELECT car_id FROM ads WHERE id=:id"
+    #result = db.session.execute(sql, {"id":id}).fetchone()
+    #car_id = result[0]
 
     #Car info
     sql = "SELECT * FROM cars WHERE id=:id"
-    result = db.session.execute(sql, {"id":car_id})
+    result = db.session.execute(sql, {"id":get_car_id_by_ad_id(id)})
     car_data = result.fetchall()
 
     #Seller id
@@ -206,7 +222,7 @@ def ad_page(id):
 
     #Equipment info
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
-    result = db.session.execute(sql, {"id": car_id})
+    result = db.session.execute(sql, {"id": get_car_id_by_ad_id(id)})
     cars_equipment = result.fetchall()
 
     db.session.commit()
