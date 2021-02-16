@@ -28,8 +28,12 @@ Ei
 {{ e[0] }} <br>
 {% endfor %}
 <hr>
-<b>Lisätiedot:</b> <br>
+<b>Auton kuva</b>
+<br>
 {% for i in info %}
+<a href="/ad_image/{{ i[0] }}">Kuva</a>
+<br>
+<b>Lisätiedot:</b> <br>
 {{ i[1] }} <br>
 <b>Ilmoitus jätetty:</b> <br> {{ i[2].strftime("%Y-%m-%d") }} <br>
 {% endfor %}

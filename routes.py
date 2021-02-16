@@ -1,12 +1,8 @@
 from app import app
-from flask import render_template, request
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, request, session, make_response
 from os import urandom
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
-
-def create_session_token():
-    return urandom(16).hex()
 
 @app.route("/")
 def index():
@@ -34,6 +30,7 @@ def login_as_user():
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
             session["username"] = username
+            session["csrf_token"] = urandom(16).hex()
             return redirect("/")
         else:
             return render_template("error.html", error="Tarkista käyttäjätunnus ja salasana!")
@@ -152,6 +149,7 @@ def get_equipment_id_by_name(name):
 def logout():
     del session["user_id"]
     del session["username"]
+    del session["csrf_token"]
     return redirect("/")
 
 @app.route("/ad/<int:id>")
@@ -187,9 +185,19 @@ def ad_page(id):
     cars_equipment = result.fetchall()
 
     db.session.commit()
-
     return render_template("ad_info.html",
-    specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id, equipment=cars_equipment)
+        specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id,
+        equipment=cars_equipment)
+
+
+@app.route("/ad_image/<int:id>")
+def show(id):
+    sql = "SELECT data FROM images, ad_images WHERE ad_images.ad_id=:id"
+    result = db.session.execute(sql, {"id":id})
+    image = result.fetchone()[0]
+    response = make_response(bytes(image))
+    response.headers.set("Content-Type", "image/jpeg")
+    return render_template("image.html", image=bytes(image))
 
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -197,6 +205,8 @@ def register():
 
 @app.route("/new_user", methods=["GET","POST"])
 def create_new_user():
+    if session["csfr_token"] != request.form["csrf_token"]:
+        abort(403)
     username = request.form["username"]
     if len(username.strip()) < 1:
         return render_template("error.html", error="Nimi ei voi olla tyhjä merkkijono!")
