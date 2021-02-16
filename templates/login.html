@@ -5,6 +5,7 @@ Tunnus: <input type="text" name="username">
 </p>
 <p>
     <input type="submit" value="Kirjaudu">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </p>
 </form>
 Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>

@@ -51,6 +51,7 @@ Ei
 <form action="/remove_ad/{{ i[0]  }}" method="POST">
     Poista ilmoitus tästä
     <input type="submit" value="Poista ilmoitus">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% endfor %}
 <br>
@@ -58,6 +59,7 @@ Ei
 <form action="/update_car_info/{{ i[0] }}" method="POST">
 Muokkaa ilmoitusta tästä
 <input type="submit" value="Muokkaa ilmoitusta">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% endfor %}
 <br>

@@ -18,6 +18,7 @@ Tietosi:
 <input type="location" id="location" name="location" value="{{ i[4] }}">
 <br>
 <input type="submit" value="Lähetä">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 {% endfor %}
 </form>
 <a href="/">Etusivulle</a>

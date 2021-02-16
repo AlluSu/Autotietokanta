@@ -1,6 +1,6 @@
 <form action="/send" method="POST" enctype="multipart/form-data">
 <p>
-    Syötä auton tiedot:
+    <b>Syötä auton tiedot:</b>
 </p>
 Merkki:
 <input type="text" name="brand" required>
@@ -82,7 +82,7 @@ Lisätiedot:
 <br>
 <textarea name="info" rows="3" cols="50"></textarea>
 <br>
-Raksi varusteet:
+Valitse varusteet:
 <br>
 <ul style="list-style-type:none;">
     {% for i in equipment %}
@@ -93,8 +93,14 @@ Raksi varusteet:
 {% endfor %}
 </ul>
 <br>
+Voit lisätä halutessasi kuvan ilmoitukseen.
+<br>
+Kuvan maksimikoko on <i>100 kilotavua (kt)</i> ja kuvan tiedostomuodon on
+oltava <i>.jpg</i>.
+<br>
 Kuva: <input type="file" name="file">
 <br>
 <input type="submit" value="Lähetä">
 <input type="reset" value="Tyhjennä">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>

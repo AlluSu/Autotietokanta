@@ -19,6 +19,8 @@ def index():
 
 @app.route("/login_user", methods=["POST"])
 def login_as_user():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     username = request.form["username"]
     password = request.form["password"]
     sql = "SELECT password, id FROM users WHERE username=:username"
@@ -55,6 +57,8 @@ def new_car_form():
 
 @app.route("/send", methods=["POST"])
 def send():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     brand = request.form["brand"]
     model = request.form["model"]
     chassis = request.form["chassis"]
@@ -189,7 +193,6 @@ def ad_page(id):
         specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id,
         equipment=cars_equipment)
 
-
 @app.route("/ad_image/<int:id>")
 def show(id):
     sql = "SELECT data FROM images, ad_images WHERE ad_images.ad_id=:id"
@@ -197,7 +200,7 @@ def show(id):
     image = result.fetchone()[0]
     response = make_response(bytes(image))
     response.headers.set("Content-Type", "image/jpeg")
-    return render_template("image.html", image=bytes(image))
+    return response
 
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -243,6 +246,8 @@ def show_user_data():
 
 @app.route("/update_user_info", methods=["POST"])
 def update_user_info():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     first_name = request.form["fname"]
     last_name = request.form["sname"]
     location = request.form["location"]
@@ -257,6 +262,8 @@ def update_user_info():
 
 @app.route("/remove_ad/<int:id>", methods=["POST"])
 def remove_ad(id):
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     sql = "UPDATE ads SET visible=False WHERE user_id=:logged AND ads.id=:id"
     db.session.execute(sql, {"logged":user_id(), "id":id})
     db.session.commit()
@@ -264,6 +271,8 @@ def remove_ad(id):
 
 @app.route("/update_car_info/<int:id>", methods=["POST"])
 def edit_car_info(id):
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, " \
           "c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE " \
           "c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
@@ -286,6 +295,8 @@ def edit_car_info(id):
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     brand = request.form["brand"]
     if len(brand.strip()) < 1:
         return render_template("error.html", error="Merkki ei voi olla tyhjä!")
@@ -336,6 +347,8 @@ def update(id):
 
 @app.route("/search", methods=["GET"])
 def result():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     query = request.args["query"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "a.info LIKE :query AND a.visible=:visible"
@@ -345,6 +358,8 @@ def result():
 
 @app.route("/sort", methods=["GET"])
 def sort():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     option = request.args["options"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "c.id=a.car_id AND a.visible=True"

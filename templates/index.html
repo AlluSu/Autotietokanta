@@ -33,12 +33,14 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
     <option value="created DESC">Ilmoitus: (uusin ensin)</option>
 </select>
 <input type="submit" value="Lajittele">
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 Hae ilmoituksista hakusanalla:
 <form action="/search" method="GET">
     Hakusana: <input type="text" name="query">
     <br>
     <input type="submit" value="Lähetä">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 Myytävät autot:
 <hr>
