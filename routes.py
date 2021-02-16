@@ -1,5 +1,5 @@
 from app import app
-from flask import redirect, render_template, request, session, make_response
+from flask import redirect, render_template, request, session, make_response, abort
 from os import urandom
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
@@ -11,16 +11,18 @@ def index():
           "AND a.visible=True"
     result = db.session.execute(sql)
     cars = result.fetchall()
-    sql = "SELECT id FROM ads WHERE user_id=:id AND visible=:visible"
-    result = db.session.execute(sql, {"id":user_id(), "visible":True})
-    owner_id = result.fetchone()
+
+    #TODO: REMOVE IF UNNECESSARY
+    #sql = "SELECT id FROM ads WHERE user_id=:id AND visible=:visible"
+    #result = db.session.execute(sql, {"id":user_id(), "visible":True})
+    #owner_id = result.fetchone()
+    #, owner=owner_id
+
     db.session.commit()
-    return render_template("index.html", cars=cars, owner=owner_id)
+    return render_template("index.html", cars=cars)
 
 @app.route("/login_user", methods=["POST"])
 def login_as_user():
-    if session["csrf_token"] != request.form["csrf_token"]:
-        abort(403)
     username = request.form["username"]
     password = request.form["password"]
     sql = "SELECT password, id FROM users WHERE username=:username"
@@ -48,17 +50,27 @@ def user_id():
 def logged_user():
     return session.get("username",0)
 
-@app.route("/new")
-def new_car_form():
-    sql = "SELECT id, name FROM equipment"
+def get_all_car_equipment():
+    sql = "SELECT * FROM equipment"
     result = db.session.execute(sql)
     equipment = result.fetchall()
-    return render_template("car_form.html", equipment=equipment)
+    return equipment
+
+@app.route("/new")
+def new_car_form():
+
+    # TODO: REMOVE IF UNNECESSARY
+    #sql = "SELECT * FROM equipment"
+    #result = db.session.execute(sql)
+    #equipment = result.fetchall()
+    return render_template("car_form.html", equipment=get_all_car_equipment())
 
 @app.route("/send", methods=["POST"])
 def send():
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
+
+    # TODO: checks?
     brand = request.form["brand"]
     model = request.form["model"]
     chassis = request.form["chassis"]
@@ -125,11 +137,10 @@ def send():
     print("length", len(file.read()),"bytes")
     name = file.filename
     if not name.endswith(".jpg"):
-        error = "Väärä tiedostopääte"
-        return render_template("error.html", error=error)
+        return render_template("error.html", error="Väärä tiedostopääte")
     data = file.read()
     if len(data) > 100*1024:
-        error = "Liian iso tiedosto"
+        return render_template("error.html", error="Liian iso tiedosto")
     sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
     result = db.session.execute(sql, {"name":name, "data":data})
     image_id = result.fetchone()[0]
@@ -239,8 +250,7 @@ def create_new_user():
 @app.route("/userinfo", methods=["GET", "POST"])
 def show_user_data():
     sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
-    logged = user_id()
-    result = db.session.execute(sql, {"id":logged})
+    result = db.session.execute(sql, {"id":user_id()})
     user_data = result.fetchall()
     return render_template("user_data.html", user=user_data)
 
