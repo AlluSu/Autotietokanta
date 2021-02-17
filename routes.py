@@ -240,7 +240,14 @@ def ad_page(id):
     db.session.commit()
     return render_template("ad_info.html",
         specs=car_data, info=ad_data, seller=get_user_info_by_id(id), logged=user_id(), id=seller_id,
-        equipment=cars_equipment)
+        equipment=cars_equipment, admin=is_admin(user_id()))
+
+def is_admin(id):
+    sql = "SELECT admin FROM users WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    admin = result.fetchone()[0]
+    print(admin)
+    return admin
 
 @app.route("/ad_image/<int:id>")
 def show(id):

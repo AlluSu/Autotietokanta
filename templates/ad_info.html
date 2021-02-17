@@ -46,7 +46,7 @@ Ei
 <b>Paikkakunta: </b>{{ info[4] }} <br>
 {% endfor %}
 <hr>
-{% if logged == id %}
+{% if logged == id%}
 {% for i in info %}
 <form action="/remove_ad/{{ i[0]  }}" method="POST">
     Poista ilmoitus tästä
