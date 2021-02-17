@@ -40,7 +40,7 @@ def login_as_user():
             return render_template("error.html", error="Tarkista käyttäjätunnus ja salasana!")
 
 
-@app.route("/login", methods=["GET"])
+@app.route("/login")
 def login():
     return render_template("login.html")
 
@@ -226,11 +226,10 @@ def ad_page(id):
     result = db.session.execute(sql, {"id":id}).fetchone()
     seller_id = result[0]
 
-    #TODO: REMOVE IF UNNECESSARY
     #Seller info
-    #sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
-    #result = db.session.execute(sql, {"id":seller_id})
-    #seller_data = result.fetchall()
+    sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
+    result = db.session.execute(sql, {"id":seller_id})
+    seller_data = result.fetchall()
 
     #Equipment info
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
@@ -239,7 +238,7 @@ def ad_page(id):
 
     db.session.commit()
     return render_template("ad_info.html",
-        specs=car_data, info=ad_data, seller=get_user_info_by_id(id), logged=user_id(), id=seller_id,
+        specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id,
         equipment=cars_equipment, admin=is_admin(user_id()))
 
 def is_admin(id):
@@ -403,7 +402,7 @@ def update(id):
 
     return redirect("/")
 
-@app.route("/search", methods=["GET"])
+@app.route("/search")
 def result():
     query = request.args["query"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
@@ -412,7 +411,7 @@ def result():
     ads = result.fetchall()
     return render_template("index.html", cars=ads)
 
-@app.route("/sort", methods=["GET"])
+@app.route("/sort")
 def sort():
     option = request.args["options"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
@@ -482,3 +481,13 @@ def sort():
         return render_template("/index.html", cars=ads)    
     else:
         return render_template("/index.html", cars=ads)
+
+@app.route("/own_ads")
+def show_logged_users_ads():
+    sql = "SELECT c.brand, c.model, c.mileage, c.year, c.price, a.id, a.info, a.created FROM cars c, ads a WHERE " \
+          "a.user_id=:id AND c.id=a.car_id AND a.visible=:visible"
+    result = db.session.execute(sql, {"id":user_id(), "visible":False})
+    unactive_ads = result.fetchall()
+    result = db.session.execute(sql, {"id":user_id(), "visible":True})
+    active_ads = result.fetchall()
+    return render_template("own_ads.html", unactive=unactive_ads, active=active_ads)

@@ -1,0 +1,44 @@
+<a href="/">Siirry etusivulle</a>
+<div>
+    <p>
+        <b>
+            Omat ilmoitukset:
+        </b>
+    </p>
+    <hr>
+</div>
+<div>
+    <p>
+        <b>
+            Aktiiviset:
+        </b>
+    </p>
+    {% for i in active %}
+<b>Merkki: </b> {{ i[0] }} <br>
+<b>Malli: </b> {{ i[1] }} <br>
+<b>Mittarilukema: </b> {{ i[2] }} <br>
+<b>Vuosimalli: </b> {{ i[3] }} <br>
+<b>Hinta: </b> {{ i[4] }} <br>
+<a href="/ad/{{ i[5] }}">Siirry ilmoitukseen</a> <br>
+<hr>
+{% endfor %}
+</div>
+<div>
+    <div>
+        <p>
+            <b>
+                Menneet:
+            </b>
+        </p>
+        {% for i in unactive %}
+    <b>Merkki: </b> {{ i[0] }} <br>
+    <b>Malli: </b> {{ i[1] }} <br>
+    <b>Mittarilukema: </b> {{ i[2] }} <br>
+    <b>Vuosimalli: </b> {{ i[3] }} <br>
+    <b>Hinta: </b> {{ i[4] }} <br>
+    {{ i[6] }}
+
+    <hr>
+    {% endfor %}
+    </div>
+</div>
