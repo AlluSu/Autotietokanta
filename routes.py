@@ -100,22 +100,23 @@ def send():
     drive = request.form["drive"]
     transmission = request.form["transmission"]
     mileage = request.form["mileage"]
-    if mileage < 1 or mileage > 10000000:
+    print(mileage)
+    if int(mileage) < 1 or int(mileage) > 10000000:
         return render_template("error.html", error="Mittarilukema ei ole sallitulla välillä!")
     year = request.form["year"]
-    if year < 1900 or year > 2021:
+    if int(year) < 1900 or int(year) > 2021:
         return render_template("error.html", error="Vuosi ei ole sallitulla välillä!")
     price = request.form["price"]
-    if price < 1 or price > 10000000:
+    if int(price) < 1 or int(price) > 10000000:
         return render_template("error.html", error="Hinta ei ole sallitulla välillä!")
     color = request.form["color"]
     if len(color.strip()) < 1:
         return render_template("error.html", error="Väri ei voi olla tyhjä!")
     engine = request.form["engine"]
-    if engine < 100 or engine > 10000:
+    if int(engine) < 100 or int(engine) > 10000:
         return render_template("error.html", error="Moottorin tilavuus ei ole sallitulla välillä!")
     power = request.form["power"]
-    if power < 0 or power > 2000:
+    if int(power) < 0 or int(power) > 2000:
         return render_template("error.html", error="Moottorin teho ei ole sallitulla välillä!")
     legal = request.form["legal"]
 
