@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <body>
+    {% extends "layout.html" %}
+    {% block title %}Etusivu{% endblock %}
+    {% block content %}
 <h2>Ilmoituksen tiedot:</h2>
 <hr>
 <div>
@@ -55,7 +58,6 @@ Ei
 {% for i in info %}
 <div>
 <form action="/remove_ad/{{ i[0]  }}" method="POST">
-    Poista ilmoitus tästä
     <input type="submit" value="Poista ilmoitus">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
@@ -64,7 +66,6 @@ Ei
 {% for i in info %}
 <div>
 <form action="/update_car_info/{{ i[0] }}" method="POST">
-<p>Muokkaa ilmoitusta tästä</p>
 <input type="submit" value="Muokkaa ilmoitusta">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
@@ -74,12 +75,11 @@ Ei
 {% for i in info %}
 <div>
 <form action="/remove_ad/{{ i[0]  }}" method="POST">
-    <p>Poista ilmoitus tästä</p>
     <input type="submit" value="Poista ilmoitus">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 </div>
 {% endfor %}
 {% endif %}
-<p><a href="/">Palaa takaisin etusivulle</a></p>
+{% endblock %}
 </body>

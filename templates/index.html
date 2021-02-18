@@ -2,13 +2,30 @@
 <link rel="stylesheet" href="/static/main.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
+    {% extends "layout.html" %}
+    {% block title %}Etusivu{% endblock %}
+    {% block content %}
     <h1>Tervetuloa AutoNettiin!</h1>
 {% if session.user_id %}
 <p><b>Kirjautuneena:</b> {{ session.username }}</p>
-<p>Jätä ilmoitus <a href="/new">Tästä</a></p>
-<p>Muokkaa tietojasi <a href="/userinfo">Tästä</a></p>
-<p><a href="/logout">Kirjaudu ulos</a></p>
-<p><a href="/own_ads">Tarkastele omia ilmoituksia</a></p>
+<div>
+<table>
+    <tr>
+        <td>
+            <a href="/logout">Kirjaudu ulos</a>
+        </td>
+        <td>
+            <a href="/new">Jätä ilmoitus </a>
+        </td>
+        <td>
+            <a href="/userinfo">Muokkaa tietojasi</a>
+        </td>
+        <td>
+            <a href="/own_ads">Tarkastele omia ilmoituksia</a>
+        </td>
+    </tr>
+</table>
+</div>
 {% else %}
 <p>Kirjaudu sisään <a href="/login">tästä</a>:</p>
 <p>
@@ -54,4 +71,5 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 <hr>
 </div>
 {% endfor %}
+{% endblock %}
 </body>

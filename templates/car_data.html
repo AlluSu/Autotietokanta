@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<body>
+    {% extends "layout.html" %}
+    {% block title %}Tietojen päivitys{% endblock %}
+    {% block content %}
 {% for i in data %}
 <form action="/update/{{ i[0] }}" method="POST">
     <p>
@@ -129,3 +134,5 @@
     <input type="reset" value="Tyhjennä">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
+    {% endblock %}
+</body>

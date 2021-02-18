@@ -1,2 +1,8 @@
-{{ error }} <br>
-<a href="/">Palaa etusivulle</a>
+<!DOCTYPE html>
+<body>
+    {% extends "layout.html" %}
+    {% block title %}Tapahtui virhe{% endblock %}
+    {% block content %}
+<p>{{ error }}</p>
+{% endblock %}
+</body>
