@@ -1,6 +1,11 @@
+<!DOCTYPE html>
+<body>
+    {% extends "layout.html" %}
+    {% block title %}Luo käyttäjä{% endblock %}
+    {% block content %}
+    <h2>Luo uusi käyttäjä</h2>
+    <hr>
 <form action="/new_user" method="POST">
-Syötä tiedot:
-<br>
 <label for="username">Käyttäjätunnus: </label>
 <input type="text" id="username" name="username" required>
 <br>
@@ -26,3 +31,5 @@ Syötä tiedot:
 <input type="reset" value="Tyhjennä">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+{% endblock %}
+</body>

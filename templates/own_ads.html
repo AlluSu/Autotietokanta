@@ -1,18 +1,11 @@
-<a href="/">Siirry etusivulle</a>
+<!DOCTYPE html>
+<body>
+    {% extends "layout.html" %}
+    {% block title %}Ilmoituksesi{% endblock %}
+    {% block content %}
 <div>
-    <p>
-        <b>
-            Omat ilmoitukset:
-        </b>
-    </p>
-    <hr>
-</div>
-<div>
-    <p>
-        <b>
-            Aktiiviset:
-        </b>
-    </p>
+<h2>Aktiiviset</h2>
+<hr>
     {% for i in active %}
 <b>Merkki: </b> {{ i[0] }} <br>
 <b>Malli: </b> {{ i[1] }} <br>
@@ -24,21 +17,18 @@
 {% endfor %}
 </div>
 <div>
-    <div>
-        <p>
-            <b>
-                Menneet:
-            </b>
-        </p>
-        {% for i in unactive %}
-    <b>Merkki: </b> {{ i[0] }} <br>
-    <b>Malli: </b> {{ i[1] }} <br>
-    <b>Mittarilukema: </b> {{ i[2] }} <br>
-    <b>Vuosimalli: </b> {{ i[3] }} <br>
-    <b>Hinta: </b> {{ i[4] }} <br>
-    {{ i[6] }}
-
+    <h2>Menneet</h2>
     <hr>
-    {% endfor %}
-    </div>
+    {% for i in unactive %}
+<b>Merkki: </b> {{ i[0] }} <br>
+<b>Malli: </b> {{ i[1] }} <br>
+<b>Mittarilukema: </b> {{ i[2] }} <br>
+<b>Vuosimalli: </b> {{ i[3] }} <br>
+<b>Hinta: </b> {{ i[4] }} <br>
+{{ i[6] }}
+
+<hr>
+{% endfor %}
 </div>
+{% endblock %}
+</body>

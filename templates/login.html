@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<body>
+    {% extends "layout.html" %}
+    {% block title %}Kirjautuminen{% endblock %}
+    {% block content %}
 <form action="/login_user" method="POST">
 Tunnus: <input type="text" name="username">
 <p>
@@ -8,3 +13,5 @@ Tunnus: <input type="text" name="username">
 </p>
 </form>
 Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
+{% endblock %}
+</body>

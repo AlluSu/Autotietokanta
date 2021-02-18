@@ -1,5 +1,11 @@
+<!DOCTYPE html>
+<body>
+{% extends "layout.html" %}
+{% block title %}Muokkaa tietojasi{% endblock %}
+{% block content %}
+<h2>Muokkaa tietojasi</h2>
+<hr>
 <form action="/update_user_info" method="POST">
-Tietosi:
 {% for i in user %}
 <br>
 <label for="fname">Etunimi: </label>
@@ -21,4 +27,5 @@ Tietosi:
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 {% endfor %}
 </form>
-<a href="/">Etusivulle</a>
+{% endblock %}
+</body>
