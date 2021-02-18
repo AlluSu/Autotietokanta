@@ -242,6 +242,8 @@ def ad_page(id):
         equipment=cars_equipment, admin=is_admin(user_id()))
 
 def is_admin(id):
+    if id == 0:
+        return False
     sql = "SELECT admin FROM users WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     admin = result.fetchone()[0]

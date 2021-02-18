@@ -1,5 +1,8 @@
-<b>Ilmoituksen tiedot:</b>
+<!DOCTYPE html>
+<body>
+<h2>Ilmoituksen tiedot:</h2>
 <hr>
+<div>
 {% for spec in specs %}
 <b>Merkki: </b>{{ spec[1] }} <br>
 <b>Malli: </b>{{ spec[2] }} <br>
@@ -19,24 +22,26 @@ Kyllä
 {% else %}
 Ei
 {% endif %}
-<br>
 {% endfor %}
+</div>
 <hr>
-<b>Varusteet:</b>
-<br>
+<h3>Varusteet:</h3>
+<div>
 {% for e in equipment %}
 {{ e[0] }} <br>
 {% endfor %}
+</div>
 <hr>
-<b>Auton kuva</b>
-<br>
+<h3>Auton kuva</h3>
+<div>
 {% for i in info %}
 <a href="/ad_image/{{ i[0] }}">Kuva</a>
-<br>
-<b>Lisätiedot:</b> <br>
-{{ i[1] }} <br>
-<b>Ilmoitus jätetty:</b> <br> {{ i[2].strftime("%Y-%m-%d") }} <br>
+<h3>Lisätiedot:</h3>
+{{ i[1] }}
+<h3>Ilmoitus jätetty:</h3>
+{{ i[2].strftime("%Y-%m-%d") }}
 {% endfor %}
+</div>
 <hr>
 <b>Ilmoittajan tiedot:</b> <br>
 {% for info in seller %}
@@ -48,27 +53,33 @@ Ei
 <hr>
 {% if logged == id%}
 {% for i in info %}
+<div>
 <form action="/remove_ad/{{ i[0]  }}" method="POST">
     Poista ilmoitus tästä
     <input type="submit" value="Poista ilmoitus">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+</div>
 {% endfor %}
-<br>
 {% for i in info %}
+<div>
 <form action="/update_car_info/{{ i[0] }}" method="POST">
-Muokkaa ilmoitusta tästä
+<p>Muokkaa ilmoitusta tästä</p>
 <input type="submit" value="Muokkaa ilmoitusta">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+</div>
 {% endfor %}
 {% elif admin %}
 {% for i in info %}
+<div>
 <form action="/remove_ad/{{ i[0]  }}" method="POST">
-    Poista ilmoitus tästä
+    <p>Poista ilmoitus tästä</p>
     <input type="submit" value="Poista ilmoitus">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+</div>
 {% endfor %}
 {% endif %}
-<a href="/">Palaa takaisin etusivulle</a>
+<p><a href="/">Palaa takaisin etusivulle</a></p>
+</body>
