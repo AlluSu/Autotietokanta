@@ -245,17 +245,19 @@ def is_admin(id):
     sql = "SELECT admin FROM users WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     admin = result.fetchone()[0]
-    print(admin)
     return admin
 
 @app.route("/ad_image/<int:id>")
 def show(id):
-    sql = "SELECT data FROM images, ad_images WHERE ad_images.ad_id=:id"
+    sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
+    image_id = result.fetchone()[0]
+    sql = "SELECT data FROM images WHERE id=:id"
+    result = db.session.execute(sql,{"id":image_id})
     image = result.fetchone()[0]
     response = make_response(bytes(image))
     response.headers.set("Content-Type", "image/jpeg")
-    return response
+    return render_template("image.html", image=image)
 
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -405,6 +407,11 @@ def update(id):
 @app.route("/search")
 def result():
     query = request.args["query"]
+    if str(query) == "":
+            sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c"
+            result = db.session.execute(sql)
+            cars = result.fetchall()
+            return render_template("index.html", cars=cars)
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "a.info LIKE :query AND a.visible=:visible"
     result = db.session.execute(sql, {"query":'%'+query+'%', "visible":True})

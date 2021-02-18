@@ -2,22 +2,20 @@
 <link rel="stylesheet" href="/static/main.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
-Tervetuloa AutoNettiin! <br>
+    <h1>Tervetuloa AutoNettiin!</h1>
 {% if session.user_id %}
-<p>Kirjautuneena: {{ session.username }}</p>
-Jätä ilmoitus <a href="/new">Tästä</a>
-<br>
-Muokkaa tietojasi <a href="/userinfo">Tästä</a>
-<br>
-<a href="/logout">Kirjaudu ulos</a>
-<br>
-<a href="/own_ads">Tarkastele omia ilmoituksia</a>
+<p><b>Kirjautuneena:</b> {{ session.username }}</p>
+<p>Jätä ilmoitus <a href="/new">Tästä</a></p>
+<p>Muokkaa tietojasi <a href="/userinfo">Tästä</a></p>
+<p><a href="/logout">Kirjaudu ulos</a></p>
+<p><a href="/own_ads">Tarkastele omia ilmoituksia</a></p>
 {% else %}
-Kirjaudu sisään <a href="/login">tästä</a>:
-<br>
+<p>Kirjaudu sisään <a href="/login">tästä</a>:</p>
+<p>
 Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
-<br>
+</p>
 {% endif %}
+<div>
 <form action="/sort" method="GET">
 <label for="options">Lajittele:</label>
 <select name="options" id="cars">
@@ -35,14 +33,17 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 </select>
 <input type="submit" value="Lajittele">
 </form>
-Hae ilmoituksista hakusanalla:
+</div>
+<div>
+<p>Hae ilmoituksista hakusanalla:</p>
 <form action="/search" method="GET">
     Hakusana: <input type="text" name="query">
-    <br>
     <input type="submit" value="Lähetä">
 </form>
-Myytävät autot:
+</div>
+<h3>Myytävät autot:</h3>
 <hr>
+<div>
 {% for car in cars %}
 <b>Merkki:</b> {{ car[1] }}<br>
 <b>Malli:</b> {{ car[2] }}<br>
@@ -51,5 +52,6 @@ Myytävät autot:
 <b>Hinta:</b> {{ car[5] }} €<br>
 <a href="/ad/{{ car[0] }}">Mene ilmoitukseen</a>
 <hr>
+</div>
 {% endfor %}
 </body>
