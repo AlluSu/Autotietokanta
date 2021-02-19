@@ -237,8 +237,6 @@ def is_admin(id):
 def show(id):
     sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
-    if len(result.fetchall()) == 0:
-        return render_template("error.html", error="Ei kuvaa!")
     image_id = result.fetchone()[0]
     sql = "SELECT data FROM images WHERE id=:id"
     result = db.session.execute(sql,{"id":image_id})
