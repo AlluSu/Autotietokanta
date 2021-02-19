@@ -69,12 +69,8 @@ def get_user_info_by_id(id):
 
 @app.route("/new")
 def new_car_form():
-
-    # TODO: REMOVE IF UNNECESSARY
-    #sql = "SELECT * FROM equipment"
-    #result = db.session.execute(sql)
-    #equipment = result.fetchall()
-    return render_template("car_form.html", equipment=get_all_car_equipment())
+    equipment = get_all_car_equipment()
+    return render_template("car_form.html", equipment=equipment)
 
 @app.route("/send", methods=["POST"])
 def send():
@@ -112,15 +108,6 @@ def send():
         return render_template("error.html", error="Moottorin teho ei ole sallitulla välillä!")
     legal = request.form["legal"]
 
-    #Equipment as list
-    equipment_list = request.form.getlist("eq")
-
-    # Custom dictionary for each car and its equipment
-    eq = get_all_car_equipment()
-    eq_dict = {}
-    for i in range(0, len(equipment_list)):
-        eq_dict[i] = equipment_list[i]
-
     #Car data
     sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, " \
           "color, engine, power, street_legal) VALUES " \
@@ -149,6 +136,13 @@ def send():
     db.session.commit()
 
     #Creating a reference between car_id and equipment_id
+    #Equipment as list and creating custom dictionary for each car and its equipment
+    equipment_list = request.form.getlist("eq")
+    eq = get_all_car_equipment()
+    eq_dict = {}
+    for i in range(0, len(equipment_list)):
+        eq_dict[i] = equipment_list[i]
+
     sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
     for name in eq_dict:
         eq = eq_dict[name]
@@ -157,8 +151,6 @@ def send():
 
     #Image file data
     file = request.files["file"]
-    #print("name", file.filename)
-    #print("length", len(file.read()),"bytes")
     name = file.filename
     if file and not name.endswith(".jpg"):
         return render_template("error.html", error="Väärä tiedostopääte")
@@ -245,6 +237,8 @@ def is_admin(id):
 def show(id):
     sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
+    if len(result.fetchall()) == 0:
+        return render_template("error.html", error="Ei kuvaa!")
     image_id = result.fetchone()[0]
     sql = "SELECT data FROM images WHERE id=:id"
     result = db.session.execute(sql,{"id":image_id})
