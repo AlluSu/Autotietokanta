@@ -9,22 +9,38 @@
 <hr>
 <form action="/update_user_info" method="POST">
 {% for i in user %}
-<br>
-<label for="fname">Etunimi: </label>
-<input type="text" id="fname" name="fname" value="{{ i[0] }}" required>
-<br>
-<label for="sname">Sukunimi: </label>
-<input type="text" id="sname" name="sname" value="{{ i[1] }}" required>
-<br>
-<label for="tel">Puhelinnumero: </label>
-<input type="tel" id="tel" name="tel" value="{{ i[2] }}" required>
-<br>
-<label for="email">Sähköposti: </label>
-<input type="email" id="email" name="email" value="{{ i[3] }}">
-<br>
-<label for="location">Paikkakunta: </label>
-<input type="location" id="location" name="location" value="{{ i[4] }}">
-<br>
+<table>
+    <tr>
+        <th>
+            <label for="fname">Etunimi: </label>
+            <input type="text" id="fname" name="fname" value="{{ i[0] }}" required>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <label for="sname">Sukunimi: </label>
+            <input type="text" id="sname" name="sname" value="{{ i[1] }}" required>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <label for="tel">Puhelinnumero: </label>
+            <input type="tel" id="tel" name="tel" value="{{ i[2] }}" required>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <label for="email">Sähköposti: </label>
+            <input type="email" id="email" name="email" value="{{ i[3] }}">
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <label for="location">Paikkakunta: </label>
+            <input type="location" id="location" name="location" value="{{ i[4] }}">
+        </th>
+    </tr>
+</table>
 <input type="submit" value="Lähetä">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 {% endfor %}

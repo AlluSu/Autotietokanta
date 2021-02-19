@@ -6,16 +6,17 @@
     {% block title %}Tietojen täyttäminen{% endblock %}
     {% block content %}
 <form action="/send" method="POST" enctype="multipart/form-data">
+<h2>Syötä auton tiedot:</h2>
 <p>
-    <b>Syötä auton tiedot:</b>
+    <b>Merkki:</b>
+    <input type="text" name="brand" required>
 </p>
-Merkki:
-<input type="text" name="brand" required>
-<br>
-Malli:
-<input type="text" name="model" required>
-<br>
-Korimalli:
+<p>
+    <b>Malli:</b>
+    <input type="text" name="model" required>
+</p>
+<p>
+    <b>Korimalli:</b>
 <input type="radio" id="sedan" name="chassis" value="Porrasperä" checked>
 <label for="sedan">Porrasperä</label>
 <input type="radio" id="estate" name="chassis" value="Farmari">
@@ -32,8 +33,9 @@ Korimalli:
 <label for="van">Pakettiauto</label>
 <input type="radio" id="pickup" name="chassis" value="Lava-auto">
 <label for="pickup">Lava-auto</label>
-<br>
-Käyttövoima:
+</p>
+<p>
+    <b>Käyttövoima:</b>
 <input type="radio" id="gasoline" name="fuel" value="Bensiini" checked>
 <label for="gasoline">Bensiini</label>
 <input type="radio" id="diesel" name="fuel" value="Diesel">
@@ -42,55 +44,87 @@ Käyttövoima:
 <label for="re85">RE85</label>
 <input type="radio" id="electricity" name="fuel" value="Sähkö">
 <label for="electricity">Sähkö</label>
-<br>
-Vetotapa:
+</p>
+<p>
+    <b>
+        Vetotapa:
+    </b>
 <input type="radio" id="rear" name="drive" value="Takaveto" checked>
 <label for="rear">Takaveto</label>
 <input type="radio" id="front" name="drive" value="Etuveto">
 <label for="front">Etuveto</label>
 <input type="radio" id="four" name="drive" value="Neliveto">
 <label for="four">Neliveto</label>
-<br>
-Vaihteisto:
+</p>
+<p>
+    <b>
+        Vaihteisto:
+    </b>
 <input type="radio" id="manual" name="transmission" value="Manuaali" checked>
 <label for="manual">Manuaali</label>
 <input type="radio" id="automatic" name="transmission" value="Automaatti">
 <label for="automatic">Automaatti</label>
-<br>
-Mittarilukema:
+</p>
+<p>
+    <b>
+        Mittarilukema:
+    </b>
 <input type="number" name="mileage" min="0" max="10000000" required>
-(kilometreinä)
-<br>
-Vuosimalli:
+(kilometreinä, KM)
+</p>
+<p>
+    <b>
+        Vuosimalli:
+    </b>
 <input type="number" name="year" min="1900" max="2021" required>
-<br>
-Hinta:
+</p>
+<p>
+    <b>
+        Hinta:
+    </b>
+
 <input type="number" name="price" min="1" max="10000000" required>
-(Euroina)
-<br>
-Väri:
+(Euroina, €)
+</p>
+<p>
+    <b>
+        Väri:
+    </b>
+
 <input type="text" name="color" required>
-<br>
-Moottorin tilavuus:
+</p>
+<p>
+    <b>
+        Moottorin tilavuus:
+    </b>
 <input type="number" name="engine" min="100" max="10000" required>
 (kuutiosenttimetreinä, cm³)
-<br>
-Teho:
+</p>
+<p>
+    <b>
+        Teho:
+    </b>
+
 <input type="number" name="power" min="0" max="2000" required>
 (kilowatteina, kW)
-<br>
-Tieliikennekelpoisuus:
+</p>
+<p>
+    <b>
+        Tieliikennekelpoisuus:
+    </b>
 <input type="radio" id="notlegal" name="legal" value="0">
 <label for="notlegal">Ei tieliikennekelpoinen</label>
 <input type="radio" id="legal" name="legal" value="1" checked>
 <label for="legal">Tieliikennekelpoinen</label>
-<br>
-Lisätiedot:
+</p>
+<p>
+    <b>
+        Lisätiedot:
+    </b>
 <br>
 <textarea name="info" rows="3" cols="50"></textarea>
-<br>
-Valitse varusteet:
-<br>
+</p>
+<h3>Valitse varusteet:</h3>
 <ul style="list-style-type:none;">
     {% for i in equipment %}
 <li>
@@ -99,14 +133,19 @@ Valitse varusteet:
 </li>
 {% endfor %}
 </ul>
-<br>
+<p>
 Voit lisätä halutessasi kuvan ilmoitukseen.
 <br>
 Kuvan maksimikoko on <i>100 kilotavua (kt)</i> ja kuvan tiedostomuodon on
 oltava <i>.jpg</i>.
 <br>
-Kuva: <input type="file" name="file">
-<br>
+</p>
+<p>
+    <b>
+        Kuva: 
+    </b>
+    <input type="file" name="file">
+</p>
 <input type="submit" value="Lähetä">
 <input type="reset" value="Tyhjennä">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
