@@ -7,10 +7,9 @@
     {% block content %}
 {% for i in data %}
 <form action="/update/{{ i[0] }}" method="POST">
-    <p>
-        Muokkaa ilmoituksen tietoja:
-        <br>
-        <b>HUOMIO! TARKASTA ETTÄ
+<h2>Muokkaa ilmoituksen tietoja:</h2>
+<p>
+        <b>HUOMIO! TARKASTA ETTÄ SEURAAVAT OVAT OIKEIN!
             <ul>
                 <li>
                     KORIMALLI
@@ -28,16 +27,24 @@
                     VARUSTELISTA
                 </li>
             </ul>
-            OVAT OIKEIN!
         </b>
     </p>
-    Merkki:
-    <input type="text" name="brand" value="{{ i[1] }}" required>
-    <br>
-    Malli:
-    <input type="text" name="model" value="{{ i[2] }}" required>
-    <br>
-    Korimalli:
+    <p>
+        <b>
+            Merkki:
+        </b>
+        <input type="text" name="brand" value="{{ i[1] }}" required>
+    </p>
+    <p>
+        <b>
+            Malli:
+        </b>
+        <input type="text" name="model" value="{{ i[2] }}" required>
+    </p>
+    <p>
+        <b>
+            Korimalli:
+        </b>
     <input type="radio" id="sedan" name="chassis" value="Porrasperä" checked>
     <label for="sedan">Porrasperä</label>
     <input type="radio" id="estate" name="chassis" value="Farmari">
@@ -54,8 +61,11 @@
     <label for="van">Pakettiauto</label>
     <input type="radio" id="pickup" name="chassis" value="Lava-auto">
     <label for="pickup">Lava-auto</label>
-    <br>
-    Käyttövoima:
+    </p>
+    <p>
+        <b>
+            Käyttövoima:
+        </b>
     <input type="radio" id="gasoline" name="fuel" value="Bensiini" checked>
     <label for="gasoline">Bensiini</label>
     <input type="radio" id="diesel" name="fuel" value="Diesel">
@@ -63,66 +73,93 @@
     <input type="radio" id="re85" name="fuel" value="Re85">
     <label for="re85">RE85</label>
     <input type="radio" id="electricity" name="fuel" value="Sähkö">
-    <label for="electricity">Sähkö</label>
-    <br>
-    Vetotapa:
+    <label for="electricity">Sähkö</label>    
+    </p>
+    <p>
+        <b>
+            Vetotapa:
+        </b>
     <input type="radio" id="rear" name="drive" value="Takaveto" checked>
     <label for="rear">Takaveto</label>
     <input type="radio" id="front" name="drive" value="Etuveto">
     <label for="front">Etuveto</label>
     <input type="radio" id="four" name="drive" value="Neliveto">
     <label for="four">Neliveto</label>
-    <br>
-    Vaihteisto:
+    </p>
+    <p>
+        <b>
+            Vaihteisto:
+        </b>
     <input type="radio" id="manual" name="transmission" value="Manuaali" checked>
     <label for="manual-transmission">Manuaali</label>
     <input type="radio" id="automatic" name="transmission" value="Automaatti">
     <label for="automatic-transmission">Automaatti</label>
-    <br>
-    Mittarilukema:
+    </p>
+    <p>
+        <b>
+            Mittarilukema:
+        </b>
     <input type="number" name="mileage" min="0" max="10000000" value="{{ i[7] }}" required>
-    (kilometreinä)
-    <br>
-    Vuosimalli:
+    (kilometreinä, KM)
+    </p>
+    <p>
+        <b>
+            Vuosimalli:
+        </b>
     <input type="number" name="year" min="1900" max="2021" value="{{ i[8] }}" required>
-    <br>
-    Hinta:
+    </p>
+    <p>
+        <b>
+            Hinta:
+        </b>
     <input type="number" name="price" min="1" max="10000000" value="{{ i[9] }}" required>
-    (Euroina)
-    <br>
-    Väri:
+    (Euroina, €)
+    </p>
+    <p>
+        <b>
+            Väri:
+        </b>
     <input type="text" name="color" value="{{ i[10] }}" required>
-    <br>
-    Moottorin tilavuus:
+    </p>
+    <p>
+        <b>
+            Moottorin tilavuus:
+        </b>
     <input type="number" name="engine" min="100" max="10000" value="{{ i[11] }}" required>
     (kuutiosenttimetreinä, cm³)
-    <br>
-    Teho:
-    <input type="number" name="power" min="0" max="2000" value="{{ i[12] }}" required>
-    (kilowatteina, kW)
-    <br>
-    Tieliikennekelpoisuus:
+    </p>
+    <p>
+        <b>
+            Teho:
+        </b>
+        <input type="number" name="power" min="0" max="2000" value="{{ i[12] }}" required>
+        (kilowatteina, kW)
+    </p>
+    <p>
+        <b>
+            Tieliikennekelpoisuus:
+        </b>
     <input type="radio" id="notlegal" name="legal" value="0">
     <label for="notlegal">Ei tieliikennekelpoinen</label>
     <input type="radio" id="legal" name="legal" value="1" checked>
     <label for="legal">Tieliikennekelpoinen</label>
-    <br>
-    Lisätiedot:
-    <br>
-    <textarea name="info" rows="3" cols="50">
-        {{ i[14] }}
-    </textarea>
-    <br>
+    </p>
+    <p>
+        <b>
+        Lisätiedot:
+        </b>
+        <br>
+        <textarea name="info" rows="3" cols="50">
+            {{ i[14] }}
+        </textarea>
+    </p>
     {% endfor %}
-    <br>
-    <b>Viimeeksi merkityt varusteet:</b>
-    <br>
+    <h3>Viimeeksi merkityt varusteet:</h3>
     {% for i in car_spesific_equipment %}
     {{ i[0] }}
     <br>
     {% endfor %}
-    <b>Merkitse varusteet:</b>
-    <br>
+    <h3>Merkitse varusteet:</h3>
     <ul style="list-style-type:none;">
         {% for e in equipment %}
     <li>
