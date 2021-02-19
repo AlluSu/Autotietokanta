@@ -11,15 +11,7 @@ def index():
           "AND a.visible=True"
     result = db.session.execute(sql)
     cars = result.fetchall()
-
-    #TODO: REMOVE IF UNNECESSARY
-    #sql = "SELECT id FROM ads WHERE user_id=:id AND visible=:visible"
-    #result = db.session.execute(sql, {"id":user_id(), "visible":True})
-    #owner_id = result.fetchone()
-    #, owner=owner_id
-
-    db.session.commit()
-    return render_template("index.html", cars=cars)
+    return render_template("index.html", cars=cars, admin=is_admin(user_id()))
 
 @app.route("/login_user", methods=["POST"])
 def login_as_user():
@@ -297,11 +289,8 @@ def create_new_user():
 
 @app.route("/userinfo")
 def show_user_data():
-    #TODO: REMOVE IF UNNECESSARY
-    # sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
-    # result = db.session.execute(sql, {"id":user_id()})
-    # user_data = result.fetchall()
-    return render_template("user_data.html", user=get_user_info_by_id(user_id()))
+    user = get_user_info_by_id(user_id())
+    return render_template("user_data.html", user=user)
 
 @app.route("/update_user_info", methods=["POST"])
 def update_user_info():
@@ -337,22 +326,10 @@ def edit_car_info(id):
           "c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
     result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True, "car_id":id})
     ad_data = result.fetchall()
-
-    # TODO: REMOVE IF UNNECESSARY
-    #All equipment
-    #sql = "SELECT * FROM equipment"
-    #result = db.session.execute(sql)
-    #all_equipment = result.fetchall()
-
-    # TODO: REMOVE IF UNNECESSARY
-    #Car spesific equipment
-    #sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
-    #result = db.session.execute(sql, {"id":id})
-    #equipment = result.fetchall()
-
-    db.session.commit()
-    return render_template("car_data.html", data=ad_data, equipment=get_all_car_equipment(),
-    car_spesific_equipment=get_car_equipment_by_id(id))
+    all_equipment = get_all_car_equipment()
+    car_spesific_equipment = get_car_equipment_by_id(id)
+    return render_template("car_data.html", data=ad_data, equipment=all_equipment,
+    car_spesific_equipment=car_spesific_equipment)
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
