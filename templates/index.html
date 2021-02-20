@@ -64,13 +64,27 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 <hr>
 <div>
 {% for car in cars %}
-<b>Merkki:</b> {{ car[1] }}<br>
-<b>Malli:</b> {{ car[2] }}<br>
-<b>Mittarilukema:</b> {{ car[3] }} km<br>
-<b>Vuosimalli:</b> {{ car[4] }}<br>
-<b>Hinta:</b> {{ car[5] }} €<br>
-<a href="/ad/{{ car[0] }}">Mene ilmoitukseen</a>
+<ul style="list-style-type:none">
+    <li>
+        <b>Merkki:</b> {{ car[1] }}
+    </li>
+    <li>
+        <b>Malli:</b> {{ car[2] }}
+    </li>
+    <li>
+        <b>Mittarilukema:</b> {{ car[3] }} km
+    </li>
+    <li>
+        <b>Vuosimalli:</b> {{ car[4] }}
+    </li>
+    <li>
+        <b>Hinta:</b> {{ car[5] }} €
+    </li>
+    <li>
+        <a href="/ad/{{ car[0] }}">Mene ilmoitukseen</a>
+    </li>
 <hr>
+</ul>
 </div>
 {% endfor %}
 {% endblock %}
