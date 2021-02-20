@@ -402,68 +402,79 @@ def sort():
     result = db.session.execute(sql)
     ads = result.fetchall()
     db.session.commit()
+    admin = is_admin(user_id())
     if option == "year":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY year"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "year DESC":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY year DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "brand":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY brand"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "brand DESC":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY brand DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "mileage":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY mileage"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "mileage DESC":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY mileage DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "price":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY price"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "price DESC":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY price DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "created":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY created"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)
     if option == "created DESC":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY created DESC"
         result = db.session.execute(sql)
         ads = result.fetchall()
-        return render_template("/index.html", cars=ads)    
+        db.session.commit()
+        return render_template("/index.html", admin=admin, cars=ads)    
     else:
-        return render_template("/index.html", cars=ads)
+        return render_template("/index.html", admin=admin, cars=ads)
 
 @app.route("/own_ads")
 def show_logged_users_ads():
@@ -473,4 +484,5 @@ def show_logged_users_ads():
     unactive_ads = result.fetchall()
     result = db.session.execute(sql, {"id":user_id(), "visible":True})
     active_ads = result.fetchall()
+    db.session.commit()
     return render_template("own_ads.html", unactive=unactive_ads, active=active_ads)
