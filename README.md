@@ -1,8 +1,8 @@
 # Autotietokanta (Tietokantasovellusten harjoitustyö)  
 
-## Vaihe 2  
+## Vaihe 3  
 
-Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa eri käyttäjät voivat tehdä omista autoistaan myynti-ilmotiuksia.  
+Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa eri käyttäjät voivat tehdä omista autoistaan myynti-ilmoituksia.  
 
 https://autonetti.herokuapp.com/  
 
@@ -12,13 +12,12 @@ https://autonetti.herokuapp.com/
 Sovelluksen päänäkymä näyttää seuraavalta:  
 ![indexpage](photos/index_without_login.png)  
 Aktiiviset ilmoitukset eli myytävät autot näkyvät allekkain heti etusivulla ja jokaisesta on linkki tarkempiin
-tietoihin. Jos käyttäjä ei ole kirjautuneena, tarjotaan mahdollisuus kirjautumiseen tai käyttäjän luontiin. 
+tietoihin. Jos käyttäjä ei ole kirjautuneena, tarjotaan mahdollisuus kirjautumiseen tai käyttäjän luontiin. Ilmoituksia on mahdollista lajitella ja hakea hakusanalla ilmoituksista. Tällä hetkellä tosin haku-ominaisuudessa on jokin mystinen bugi ja se ei toimi aivan toivotulla tavalla. Tämä pyritään korjaamaan. 
 
 #### Käyttäjän luominen  
 Uuden käyttäjän luominen näyttää seuraavalta:  
 ![new_user](photos/new_user.png)  
 Käyttäjä voi syöttää tiedot lomakkeelle jonka perusteella luodaan käyttäjä. Kaikki kentät on pakollista täyttää ja tämä on määritelty HTML-tiedostossta attribuutilla *required*. Omia tietojaan poislukien salasanaa ja käyttäjätunnusta on mahdollista muuttaa jälkeenpäin.  
-
 
 #### Kirjautuminen  
 Tällä hetkellä sovelluksen tuotantoversiossa eli heroku-versiossa on kolme käyttäjää, joita voi testata ja joista 1 on *Admin-käyttäjä*:  
@@ -62,12 +61,13 @@ Jos taas ilmoitus on jonkun muun, tarjotaan vain mahdollisuus siirtyä etusivull
 ![someones_ad](photos/viewing_ad_as_visitor.png)  
 Jos taas ilmoituksen katselija on admin, tarjotaan mahdollisuus poistaa ilmoitus esimerkiksi jos siinä on aiheeton myyntiteksti tai kuva.  
 ![admin_ad](photos/viewing_ad_as_admin.png)  
+Ilmoitukseen liitettyä kuvaa on mahdollista katsella painamalla linkkiä, jolloin se ohjaa uudelle sivulle. Tällä hetkellä kuvan näyttämisessä on pieniä ongelmia. Jokaisessa ilmoituksessa ei ole kuvaa ja jos kuvaa ei ole tulee virheilmoitus ja jos kuva on, näkyy tyhjä sivu.  
 
 #### Ilmoituksen muokkaus
-Jos käyttäjä painaa omassa ilmoituksessaan *Muokkaa ilmoitusta*, avautuu samanlainen sivu kuin jättäisi kokonaan uuden ilmoituksen. Tällä hetkellä sovellus ei osaa hakea tietokannan datan perusteella tietoa siitä, että mitkä radiobutton-komponentit ovat valittuna joten ne siirtyvät oletusarvoihinsa jokaisella muokkauskerralla, jolloin vastuu on käyttäjällä muistaa muuttaa myös ne vastaamaan alkuperäistä.  
+Jos käyttäjä painaa omassa ilmoituksessaan *Muokkaa ilmoitusta*, avautuu samanlainen sivu kuin jättäisi kokonaan uuden ilmoituksen. Tällä hetkellä sovellus ei osaa asettaa radiobutton-komponentteja oikeaan tilaan vaan ne menevät oletusasetuksiin, jolloin vastuu on käyttäjällä muistaa muuttaa myös ne vastaamaan alkuperäistä.  
 Myöskään varuste-checkboxit eivät ole itsestään valittuna kun muokataan auton tietoja jolla on varusteita, mutta käyttäjän avuksi on laitettu informatiivinen teksti ja listaus viimeeksi valituista varusteista.  
 ![editing](photos/edit_ad_1.png)  
-![editing2](photos/edit_ad_2.png)   
+![editing2](photos/edit_ad_2.png)  
 Kuvan autossa ei ole varusteita joten lista on tyhjä.  
 
 #### Omien tietojen muokkaus  
