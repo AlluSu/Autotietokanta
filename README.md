@@ -31,13 +31,13 @@ Tällä hetkellä sovelluksen tuotantoversiossa eli heroku-versiossa on kolme k�
     - Salasana: hevonen123
     - Rooli: tavallinen  
 
-Admin käyttäjä on kuin tavallinen käyttäjä, mutta pystyy poistamaan jokaisen ilmoituksen. Admin rooli on annettu suoraan tietokannan.  
+Admin käyttäjä on kuin tavallinen käyttäjä, mutta pystyy poistamaan jokaisen ilmoituksen. Admin rooli on annettu suoraan komentorivin kautta tietokantaan.  
 
 Kirjautumisnäkymä näyttää seuraavalta:  
 ![login](photos/login.png)  
-Virheilmoitus annetaan jos käyttäjätunnus tai salasana on väärä.  
+Jos käyttäjätunnus tai salasana on väärä annetaan virheilmoitus.  
 
-Kun käyttäjä kirjautuu sisään, näyttää etusivu seuraavalta:  
+Kun käyttäjä on kirjautunut sisään, näyttää etusivu seuraavalta:  
 ![indexpage_with_login](photos/index_with_login.png)  
 Kirjautuneena oleva käyttäjä voi siis:  
 * Jättää uuden ilmoituksen  
@@ -45,6 +45,7 @@ Kirjautuneena oleva käyttäjä voi siis:
 * Kirjautua ulos
 * Katsella omia ilmoituksiaan
 * Ja tietenkin katsella muiden ilmoituksia  
+
 Jos käyttäjä on admin-käyttäjä, näkyy etusivulla status-teksti.  
 
 #### Ilmoituksen luonti  
