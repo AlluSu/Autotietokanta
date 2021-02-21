@@ -48,12 +48,12 @@ Ei
 {% endfor %}
 </div>
 <hr>
-<b>Ilmoittajan tiedot:</b> <br>
+<h3>Ilmoittajan tiedot:</h3>
 {% for info in seller %}
 <b>Myyjä: </b>{{ info[0] }} {{ info[1] }}<br>
 <b>Puhelinnumero: </b>{{ info[2] }} <br>
 <b>Sähköposti: </b>{{ info[3] }} <br>
-<b>Paikkakunta: </b>{{ info[4] }} <br>
+<b>Paikkakunta: </b>{{ info[4] }}
 {% endfor %}
 <hr>
 {% if logged == id%}

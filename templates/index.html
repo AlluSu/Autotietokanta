@@ -12,22 +12,22 @@
 <p><b>Status: Admin</b></p>
 {% endif %}
 <div>
-<table>
-    <tr>
-        <td>
-            <a href="/logout">Kirjaudu ulos</a>
-        </td>
-        <td>
-            <a href="/new">Jätä ilmoitus </a>
-        </td>
-        <td>
-            <a href="/userinfo">Muokkaa tietojasi</a>
-        </td>
-        <td>
-            <a href="/own_ads">Tarkastele omia ilmoituksia</a>
-        </td>
-    </tr>
-</table>
+    <nav>
+        <ul>
+            <li>
+                <a href="/logout">Kirjaudu ulos</a>
+            </li>
+            <li>
+                <a href="/new">Jätä ilmoitus </a>
+            </li>
+            <li>
+                <a href="/userinfo">Muokkaa tietojasi</a>
+            </li>
+            <li>
+                <a href="/own_ads">Tarkastele omia ilmoituksia</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 {% else %}
 <p>Kirjaudu sisään <a href="/login">tästä</a>:</p>
