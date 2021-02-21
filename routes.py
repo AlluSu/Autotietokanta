@@ -1,5 +1,5 @@
 from app import app
-from flask import redirect, render_template, request, session, make_response, abort
+from flask import redirect, render_template, request, session, make_response, abort, flash
 from werkzeug.security import generate_password_hash
 from db import db
 import users
@@ -8,7 +8,7 @@ import users
 def index():
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM " \
           "cars c, ads a WHERE c.id=a.car_id " \
-          "AND a.visible=True"
+          "AND a.visible=True ORDER BY a.created DESC"
     result = db.session.execute(sql)
     cars = result.fetchall()
     db.session.commit()
@@ -19,6 +19,7 @@ def login_as_user():
     username = request.form["username"]
     password = request.form["password"]
     if users.login(username,password):
+            flash("Kirjautuminen onnistui! Kirjauduit käyttäjänä " + username)
             return redirect("/")
     else:
             return render_template("error.html", error="Tarkista käyttäjätunnus tai salasana!")
@@ -140,11 +141,13 @@ def send():
     sql = "INSERT INTO ad_images (image_id,ad_id) VALUES (:image_id,:ad_id)"
     db.session.execute(sql, {"image_id":image_id, "ad_id":ad_id})
     db.session.commit()
+    flash("Uusi ilmoitus " + brand + " " + model + " lisätty onnistuneesti!")
     return redirect("/")
 
 @app.route("/logout")
 def logout():
     if users.logout():
+        flash("Kirjauduttu ulos onnistuneesti!")
         return redirect("/")
     return render_template("error.html", error="Virhe uloskirjautuessa!")
 
@@ -248,9 +251,10 @@ def create_new_user():
         db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name,
                                  "telephone":phone.strip(),"email":email.strip(), "location":location.strip(), "admin":False, "password":hash_value})
         db.session.commit()
+        flash("Uusi käyttäjä " + username + " luotu onnistuneesti!")
         return redirect("/")
     except:
-        return render_template("error.html", error="Tapahtui virhe!")
+        return render_template("error.html", error="Käyttäjää luodessa tapahtui virhe!")
 
 @app.route("/userinfo")
 def show_user_data():
@@ -266,12 +270,16 @@ def update_user_info():
     location = request.form["location"]
     phone = request.form["tel"]
     email = request.form["email"]
-    sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
-          "location=:location WHERE id=:id"
-    db.session.execute(sql, {"id":users.get_user_id(), "firstname":first_name.strip(), "surname":last_name.strip(), "telephone":phone.strip(),
-                             "email":email.strip(), "location":location.strip()})
-    db.session.commit()
-    return redirect("/")
+    try:
+        sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
+            "location=:location WHERE id=:id"
+        db.session.execute(sql, {"id":users.get_user_id(), "firstname":first_name.strip(), "surname":last_name.strip(), "telephone":phone.strip(),
+                                "email":email.strip(), "location":location.strip()})
+        db.session.commit()
+        flash("Tiedot päivitetty onnistuneesti!")
+        return redirect("/")
+    except:
+        return render_template("error.html", error="Tapahtui virhe päivittäessä käyttäjätietoja!")
 
 @app.route("/remove_ad/<int:id>", methods=["POST"])
 def remove_ad(id):
@@ -281,10 +289,12 @@ def remove_ad(id):
         sql = "UPDATE ads SET visible=False WHERE ads.id=:id"
         db.session.execute(sql, {"logged":users.get_user_id(), "id":id})
         db.session.commit()
+        flash("Ilmoitus poistettu onnistuneesti!")
         return redirect("/")
     sql = "UPDATE ads SET visible=False WHERE user_id=:logged AND ads.id=:id"
     db.session.execute(sql, {"logged":users.get_user_id(), "id":id})
     db.session.commit()
+    flash("Ilmoitus poistettu onnistuneesti!")
     return redirect("/")
 
 @app.route("/update_car_info/<int:id>", methods=["POST"])
@@ -350,7 +360,7 @@ def update(id):
         sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
         db.session.execute(sql, {"car_id":id, "equipment_id":get_equipment_id_by_name(i)})
     db.session.commit()
-
+    flash("Ilmoituksen " + model + " " + brand + " päivitys onnistui!")
     return redirect("/")
 
 @app.route("/search")
