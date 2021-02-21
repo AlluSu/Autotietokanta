@@ -1,6 +1,6 @@
 from app import app
 from flask import redirect, render_template, request, session, make_response, abort
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash
 from db import db
 import users
 
@@ -65,7 +65,6 @@ def new_car_form():
 def send():
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-
     brand = request.form["brand"]
     if len(brand.strip()) < 1:
         return render_template("error.html", error="Merkki ei voi olla tyhjä!")
@@ -95,7 +94,6 @@ def send():
     if int(power) < 0 or int(power) > 2000:
         return render_template("error.html", error="Moottorin teho ei ole sallitulla välillä!")
     legal = request.form["legal"]
-
     sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, " \
           "color, engine, power, street_legal) VALUES " \
           "(:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, " \
@@ -105,7 +103,6 @@ def send():
                                       "mileage":mileage, "year":year, "price":price, "color":color.strip(),
                                       "engine":engine, "power":power, "street_legal":legal})
     car_id = result.fetchone()[0]
-
     #Ad data
     info = request.form["info"]
     if len(info) > 5000:
@@ -114,11 +111,9 @@ def send():
           "(:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
     result = db.session.execute(sql, {"info":info, "visible":True, "user_id":users.get_user_id(), "car_id":car_id})
     ad_id = result.fetchone()[0]
-
     #Creating a reference between ad and car
     sql = "INSERT INTO car_ad (car_id, ad_id) VALUES (:car_id, :ad_id)"
     db.session.execute(sql, {"car_id":car_id, "ad_id":ad_id})
-
     #Creating a reference between car_id and equipment_id
     #Equipment as list and creating custom dictionary for each car and its equipment
     equipment_list = request.form.getlist("eq")
@@ -126,12 +121,10 @@ def send():
     eq_dict = {}
     for i in range(0, len(equipment_list)):
         eq_dict[i] = equipment_list[i]
-
     sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
     for name in eq_dict:
         eq = eq_dict[name]
         result = db.session.execute(sql, {"car_id":car_id, "equipment_id":get_equipment_id_by_name(eq)})
-
     #Image file data
     file = request.files["file"]
     name = file.filename
@@ -143,12 +136,10 @@ def send():
     sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
     result = db.session.execute(sql, {"name":name, "data":data})
     image_id = result.fetchone()[0]
-
     #Creating a relation between the image and the ad
     sql = "INSERT INTO ad_images (image_id,ad_id) VALUES (:image_id,:ad_id)"
     db.session.execute(sql, {"image_id":image_id, "ad_id":ad_id})
     db.session.commit()
-
     return redirect("/")
 
 @app.route("/logout")
@@ -157,12 +148,14 @@ def logout():
         return redirect("/")
     return render_template("error.html", error="Virhe uloskirjautuessa!")
 
+#car-related
 def get_car_id_by_ad_id(id):
     sql = "SELECT car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id}).fetchone()
     db.session.commit()
     return result[0]
 
+#car-related
 def get_all_car_info_by_id(id):
     sql = "SELECT * FROM cars WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
@@ -172,6 +165,7 @@ def get_all_car_info_by_id(id):
 
 @app.route("/ad/<int:id>")
 def ad_page(id):
+    #TODO: NEEDS REFACTORING (?)
     #Ad info
     sql = "SELECT id, info, created, user_id, car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
@@ -201,11 +195,12 @@ def ad_page(id):
     result = db.session.execute(sql, {"id":seller_id})
     seller_data = result.fetchall()
 
+    # TODO: REMOVE IF UNENCESSARY
     #Equipment info
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
     result = db.session.execute(sql, {"id": get_car_id_by_ad_id(id)})
     cars_equipment = result.fetchall()
-
+    
     db.session.commit()
     return render_template("ad_info.html",
         specs=car_data, info=ad_data, seller=seller_data, logged=users.get_user_id(), id=seller_id,
@@ -213,6 +208,7 @@ def ad_page(id):
 
 @app.route("/ad_image/<int:id>")
 def show(id):
+    #TODO: FIX
     sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
     image_id = result.fetchone()[0]
