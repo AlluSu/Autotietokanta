@@ -276,7 +276,7 @@ def update_user_info():
         db.session.execute(sql, {"id":users.get_user_id(), "firstname":first_name.strip(), "surname":last_name.strip(), "telephone":phone.strip(),
                                 "email":email.strip(), "location":location.strip()})
         db.session.commit()
-        flash("Tiedot päivitetty onnistuneesti!")
+        flash("Käyttäjätiedot päivitetty onnistuneesti!")
         return redirect("/")
     except:
         return render_template("error.html", error="Tapahtui virhe päivittäessä käyttäjätietoja!")
@@ -360,7 +360,7 @@ def update(id):
         sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
         db.session.execute(sql, {"car_id":id, "equipment_id":get_equipment_id_by_name(i)})
     db.session.commit()
-    flash("Ilmoituksen " + model + " " + brand + " päivitys onnistui!")
+    flash("Ilmoituksen " + brand + " " + model + " päivitys onnistui!")
     return redirect("/")
 
 @app.route("/search")
