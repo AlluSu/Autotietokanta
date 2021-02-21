@@ -277,6 +277,11 @@ def update_user_info():
 def remove_ad(id):
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
+    if users.is_admin(users.get_user_id()):
+        sql = "UPDATE ads SET visible=False WHERE ads.id=:id"
+        db.session.execute(sql, {"logged":users.get_user_id(), "id":id})
+        db.session.commit()
+        return redirect("/")
     sql = "UPDATE ads SET visible=False WHERE user_id=:logged AND ads.id=:id"
     db.session.execute(sql, {"logged":users.get_user_id(), "id":id})
     db.session.commit()
