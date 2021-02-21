@@ -1,8 +1,8 @@
 from app import app
-from flask import redirect, render_template, request, session, make_response, abort, flash
-from os import urandom
+from flask import redirect, render_template, request, session, make_response, abort
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
+import users
 
 @app.route("/")
 def index():
@@ -12,37 +12,21 @@ def index():
     result = db.session.execute(sql)
     cars = result.fetchall()
     db.session.commit()
-    return render_template("index.html", cars=cars, admin=is_admin(user_id()))
+    return render_template("index.html", cars=cars, admin=users.is_admin(users.get_user_id()))
 
 @app.route("/login_user", methods=["POST"])
 def login_as_user():
     username = request.form["username"]
     password = request.form["password"]
-    sql = "SELECT password, id FROM users WHERE username=:username"
-    result = db.session.execute(sql, {"username":username})
-    user = result.fetchone()
-    db.session.commit()
-    if user == None:
-        return render_template("error.html", error="Tarkista käyttäjätunnus ja salasana!")
-    else:
-        if check_password_hash(user[0], password):
-            session["user_id"] = user[1]
-            session["username"] = username
-            session["csrf_token"] = urandom(16).hex()
+    if users.login(username,password):
             return redirect("/")
-        else:
-            return render_template("error.html", error="Tarkista käyttäjätunnus ja salasana!")
+    else:
+            return render_template("error.html", error="Tarkista käyttäjätunnus tai salasana!")
 
 
 @app.route("/login")
 def login():
     return render_template("login.html")
-
-def user_id():
-    return session.get("user_id", 0)
-
-def logged_user():
-    return session.get("username",0)
 
 def get_all_car_equipment():
     sql = "SELECT * FROM equipment"
@@ -128,7 +112,7 @@ def send():
         return render_template("error.html", error="Teksti on liian pitkä")
     sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES " \
           "(:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
-    result = db.session.execute(sql, {"info":info, "visible":True, "user_id":user_id(), "car_id":car_id})
+    result = db.session.execute(sql, {"info":info, "visible":True, "user_id":users.get_user_id(), "car_id":car_id})
     ad_id = result.fetchone()[0]
 
     #Creating a reference between ad and car
@@ -169,10 +153,9 @@ def send():
 
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
-    del session["csrf_token"]
-    return redirect("/")
+    if users.logout():
+        return redirect("/")
+    return render_template("error.html", error="Virhe uloskirjautuessa!")
 
 def get_car_id_by_ad_id(id):
     sql = "SELECT car_id FROM ads WHERE id=:id"
@@ -225,16 +208,8 @@ def ad_page(id):
 
     db.session.commit()
     return render_template("ad_info.html",
-        specs=car_data, info=ad_data, seller=seller_data, logged=user_id(), id=seller_id,
-        equipment=cars_equipment, admin=is_admin(user_id()))
-
-def is_admin(id):
-    if id == 0:
-        return False
-    sql = "SELECT admin FROM users WHERE id=:id"
-    result = db.session.execute(sql, {"id":id})
-    admin = result.fetchone()[0]
-    return admin
+        specs=car_data, info=ad_data, seller=seller_data, logged=users.get_user_id(), id=seller_id,
+        equipment=cars_equipment, admin=users.is_admin(users.get_user_id()))
 
 @app.route("/ad_image/<int:id>")
 def show(id):
@@ -283,7 +258,7 @@ def create_new_user():
 
 @app.route("/userinfo")
 def show_user_data():
-    user = get_user_info_by_id(user_id())
+    user = get_user_info_by_id(users.get_user_id())
     return render_template("user_data.html", user=user)
 
 @app.route("/update_user_info", methods=["POST"])
@@ -297,7 +272,7 @@ def update_user_info():
     email = request.form["email"]
     sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
           "location=:location WHERE id=:id"
-    db.session.execute(sql, {"id":user_id(), "firstname":first_name.strip(), "surname":last_name.strip(), "telephone":phone.strip(),
+    db.session.execute(sql, {"id":users.get_user_id(), "firstname":first_name.strip(), "surname":last_name.strip(), "telephone":phone.strip(),
                              "email":email.strip(), "location":location.strip()})
     db.session.commit()
     return redirect("/")
@@ -307,7 +282,7 @@ def remove_ad(id):
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
     sql = "UPDATE ads SET visible=False WHERE user_id=:logged AND ads.id=:id"
-    db.session.execute(sql, {"logged":user_id(), "id":id})
+    db.session.execute(sql, {"logged":users.get_user_id(), "id":id})
     db.session.commit()
     return redirect("/")
 
@@ -318,7 +293,7 @@ def edit_car_info(id):
     sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, " \
           "c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE " \
           "c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
-    result = db.session.execute(sql, {"id":id, "logged":user_id(), "visible":True, "car_id":id})
+    result = db.session.execute(sql, {"id":id, "logged":users.get_user_id(), "visible":True, "car_id":id})
     ad_data = result.fetchall()
     db.session.commit()
     all_equipment = get_all_car_equipment()
@@ -400,7 +375,7 @@ def sort():
     result = db.session.execute(sql)
     ads = result.fetchall()
     db.session.commit()
-    admin = is_admin(user_id())
+    admin = users.is_admin(users.get_user_id())
     if option == "year":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY year"
@@ -478,9 +453,9 @@ def sort():
 def show_logged_users_ads():
     sql = "SELECT c.brand, c.model, c.mileage, c.year, c.price, a.id, a.info, a.created FROM cars c, ads a WHERE " \
           "a.user_id=:id AND c.id=a.car_id AND a.visible=:visible"
-    result = db.session.execute(sql, {"id":user_id(), "visible":False})
+    result = db.session.execute(sql, {"id":users.get_user_id(), "visible":False})
     unactive_ads = result.fetchall()
-    result = db.session.execute(sql, {"id":user_id(), "visible":True})
+    result = db.session.execute(sql, {"id":users.get_user_id(), "visible":True})
     active_ads = result.fetchall()
     db.session.commit()
     return render_template("own_ads.html", unactive=unactive_ads, active=active_ads)
