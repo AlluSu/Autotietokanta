@@ -253,10 +253,8 @@ def show(id):
 def register():
     return render_template("user_form.html")
 
-@app.route("/new_user", methods=["GET","POST"])
+@app.route("/new_user", methods=["POST"])
 def create_new_user():
-    if session["csfr_token"] != request.form["csrf_token"]:
-        abort(403)
     username = request.form["username"]
     if len(username.strip()) < 1:
         return render_template("error.html", error="Nimi ei voi olla tyhjä merkkijono!")
