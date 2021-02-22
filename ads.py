@@ -48,3 +48,12 @@ def get_essential_car_data():
     cars = result.fetchall()
     db.session.commit()
     return cars
+
+def get_logged_users_ad_data(car_id, logged):
+    sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, " \
+          "c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE " \
+          "c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
+    result = db.session.execute(sql, {"id":car_id, "logged":logged, "visible":True, "car_id":car_id})
+    ad_data = result.fetchall()
+    db.session.commit()
+    return ad_data

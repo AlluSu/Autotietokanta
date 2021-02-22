@@ -233,16 +233,12 @@ def remove_ad(id):
 def edit_car_info(id):
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
-    sql = "SELECT c.id, c.brand, c.model, c.chassis, c.fuel, c.drive, c.transmission, c.mileage, c.year, " \
-          "c.price, c.color, c.engine, c.power, c.street_legal, a.info FROM cars c, ads a WHERE " \
-          "c.id=:id AND a.user_id=:logged AND a.visible=:visible AND a.car_id=:id"
-    result = db.session.execute(sql, {"id":id, "logged":users.get_user_id(), "visible":True, "car_id":id})
-    ad_data = result.fetchall()
-    db.session.commit()
     all_equipment = equipment.get_all_car_equipment()
     car_spesific_equipment = equipment.get_car_equipment_by_id(id)
+    logged = users.get_user_id()
+    ad_data = ads.get_logged_users_ad_data(id, logged)
     return render_template("car_data.html", data=ad_data, equipment=all_equipment,
-    car_spesific_equipment=car_spesific_equipment)
+                            car_spesific_equipment=car_spesific_equipment)
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):
