@@ -1,6 +1,4 @@
-from app import app
 from db import db
-import users
 
 def get_essential_car_data():
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM " \
@@ -23,3 +21,15 @@ def get_all_car_info_by_id(id):
     car_data = result.fetchall()
     db.session.commit()
     return car_data
+
+def add_car_and_return_id(brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, legal):
+    sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, " \
+          "color, engine, power, street_legal) VALUES " \
+          "(:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, " \
+          ":engine, :power, :street_legal) RETURNING id"
+    result = db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis,
+                                      "fuel":fuel, "drive":drive, "transmission":transmission,
+                                      "mileage":mileage, "year":year, "price":price, "color":color,
+                                      "engine":engine, "power":power, "street_legal":legal})
+    car_id = result.fetchone()[0]
+    return car_id

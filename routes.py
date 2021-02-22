@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash
 from db import db
 import users
 import cars
+import ads
+import equipment
 
 @app.route("/")
 def index():
@@ -16,44 +18,19 @@ def login_as_user():
     username = request.form["username"]
     password = request.form["password"]
     if users.login(username,password):
-            flash("Kirjautuminen onnistui! Kirjauduit käyttäjänä " + username)
-            return redirect("/")
+        flash("Kirjautuminen onnistui! Kirjauduit käyttäjänä " + username)
+        return redirect("/")
     else:
-            return render_template("error.html", error="Tarkista käyttäjätunnus tai salasana!")
-
+        return render_template("error.html", error="Tarkista käyttäjätunnus tai salasana!")
 
 @app.route("/login")
 def login():
     return render_template("login.html")
 
-#equipment
-def get_all_car_equipment():
-    sql = "SELECT * FROM equipment"
-    result = db.session.execute(sql)
-    equipment = result.fetchall()
-    db.session.commit()
-    return equipment
-
-#equipment
-def get_car_equipment_by_id(id):
-    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
-    result = db.session.execute(sql, {"id":id})
-    equipment = result.fetchall()
-    db.session.commit()
-    return equipment
-
-#equipment
-def get_equipment_id_by_name(name):
-    sql = "SELECT id FROM equipment WHERE name=:name"
-    result = db.session.execute(sql, {"name":name})
-    name = result.fetchone()[0]
-    db.session.commit()
-    return name
-
 @app.route("/new")
 def new_car_form():
-    equipment = get_all_car_equipment()
-    return render_template("car_form.html", equipment=equipment)
+    all_equipment = equipment.get_all_car_equipment()
+    return render_template("car_form.html", equipment=all_equipment)
 
 @app.route("/send", methods=["POST"])
 def send():
@@ -88,37 +65,25 @@ def send():
     if int(power) < 0 or int(power) > 2000:
         return render_template("error.html", error="Moottorin teho ei ole sallitulla välillä!")
     legal = request.form["legal"]
-    sql = "INSERT INTO cars (brand, model, chassis, fuel, drive, transmission, mileage, year, price, " \
-          "color, engine, power, street_legal) VALUES " \
-          "(:brand, :model, :chassis, :fuel, :drive, :transmission, :mileage, :year, :price, :color, " \
-          ":engine, :power, :street_legal) RETURNING id"
-    result = db.session.execute(sql, {"brand":brand.strip(), "model":model.strip(), "chassis":chassis,
-                                      "fuel":fuel, "drive":drive, "transmission":transmission,
-                                      "mileage":mileage, "year":year, "price":price, "color":color.strip(),
-                                      "engine":engine, "power":power, "street_legal":legal})
-    car_id = result.fetchone()[0]
-    #Ad data
+    car_id = cars.add_car_and_return_id(brand.strip(), model.strip(), chassis, fuel, drive, transmission, mileage,
+                year, price, color.strip(), engine, power, legal)
+
     info = request.form["info"]
     if len(info) > 5000:
         return render_template("error.html", error="Teksti on liian pitkä")
-    sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES " \
-          "(:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
-    result = db.session.execute(sql, {"info":info, "visible":True, "user_id":users.get_user_id(), "car_id":car_id})
-    ad_id = result.fetchone()[0]
-    #Creating a reference between ad and car
-    sql = "INSERT INTO car_ad (car_id, ad_id) VALUES (:car_id, :ad_id)"
-    db.session.execute(sql, {"car_id":car_id, "ad_id":ad_id})
-    #Creating a reference between car_id and equipment_id
-    #Equipment as list and creating custom dictionary for each car and its equipment
-    equipment_list = request.form.getlist("eq")
-    eq = get_all_car_equipment()
-    eq_dict = {}
-    for i in range(0, len(equipment_list)):
-        eq_dict[i] = equipment_list[i]
-    sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
-    for name in eq_dict:
-        eq = eq_dict[name]
-        result = db.session.execute(sql, {"car_id":car_id, "equipment_id":get_equipment_id_by_name(eq)})
+        
+    ad_id = ads.add_ad_and_return_id(info, car_id)
+    try:
+        ads.create_reference(car_id, ad_id)
+    except:
+        return render_template("error.html", error="Virhe luodessa viitettä!")
+
+    checked_equipment = request.form.getlist("eq")
+    try:
+        equipment.create_reference(checked_equipment, car_id)
+    except:
+        return render_template("error.html", error="Virhe luodessa viitettä!")
+
     #Image file data
     file = request.files["file"]
     name = file.filename
@@ -276,8 +241,8 @@ def edit_car_info(id):
     result = db.session.execute(sql, {"id":id, "logged":users.get_user_id(), "visible":True, "car_id":id})
     ad_data = result.fetchall()
     db.session.commit()
-    all_equipment = get_all_car_equipment()
-    car_spesific_equipment = get_car_equipment_by_id(id)
+    all_equipment = equipment.get_all_car_equipment()
+    car_spesific_equipment = equipment.get_car_equipment_by_id(id)
     return render_template("car_data.html", data=ad_data, equipment=all_equipment,
     car_spesific_equipment=car_spesific_equipment)
 
@@ -327,7 +292,7 @@ def update(id):
     eq = request.form.getlist("varusteet")
     for i in eq:
         sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
-        db.session.execute(sql, {"car_id":id, "equipment_id":get_equipment_id_by_name(i)})
+        db.session.execute(sql, {"car_id":id, "equipment_id":equipment.get_equipment_id_by_name(i)})
     db.session.commit()
     flash("Ilmoituksen " + brand + " " + model + " päivitys onnistui!")
     return redirect("/")
