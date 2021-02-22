@@ -71,7 +71,7 @@ def send():
     info = request.form["info"]
     if len(info) > 5000:
         return render_template("error.html", error="Teksti on liian pitkä")
-        
+
     ad_id = ads.add_ad_and_return_id(info, car_id)
     try:
         ads.create_reference(car_id, ad_id)
@@ -84,6 +84,7 @@ def send():
     except:
         return render_template("error.html", error="Virhe luodessa viitettä!")
 
+    #TODO: Into a module
     #Image file data
     file = request.files["file"]
     name = file.filename
@@ -95,6 +96,7 @@ def send():
     sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
     result = db.session.execute(sql, {"name":name, "data":data})
     image_id = result.fetchone()[0]
+
     #Creating a relation between the image and the ad
     sql = "INSERT INTO ad_images (image_id,ad_id) VALUES (:image_id,:ad_id)"
     db.session.execute(sql, {"image_id":image_id, "ad_id":ad_id})
@@ -180,11 +182,8 @@ def create_new_user():
     email = request.form["email"]
     hash_value = generate_password_hash(password)
     try:
-        sql = "INSERT INTO users (username, firstname, surname, telephone, email, location, admin, password) " \
-              "VALUES (:username, :firstname, :surname, :telephone, :email, :location, :admin, :password)"
-        db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name,
-                                 "telephone":phone.strip(),"email":email.strip(), "location":location.strip(), "admin":False, "password":hash_value})
-        db.session.commit()
+        users.create_new_user(username.strip(), first_name.strip(), last_name.strip(), phone.strip(),
+                        email.strip(), location.strip(), hash_value)
         flash("Uusi käyttäjä " + username + " luotu onnistuneesti!")
         return redirect("/")
     except:
@@ -205,11 +204,8 @@ def update_user_info():
     phone = request.form["tel"]
     email = request.form["email"]
     try:
-        sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
-            "location=:location WHERE id=:id"
-        db.session.execute(sql, {"id":users.get_user_id(), "firstname":first_name.strip(), "surname":last_name.strip(), "telephone":phone.strip(),
-                                "email":email.strip(), "location":location.strip()})
-        db.session.commit()
+        users.update_user_info(users.get_user_id(), first_name.strip(), last_name.strip(), location.strip(),
+                               location.strip(), phone.strip(), email.strip())
         flash("Käyttäjätiedot päivitetty onnistuneesti!")
         return redirect("/")
     except:
@@ -300,11 +296,6 @@ def update(id):
 @app.route("/search")
 def result():
     query = request.args["query"]
-    if str(query) == "":
-            sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c"
-            result = db.session.execute(sql)
-            cars = result.fetchall()
-            return render_template("index.html", cars=cars)
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "a.info LIKE :query AND a.visible=:visible"
     result = db.session.execute(sql, {"query":'%'+query+'%', "visible":True})
@@ -396,11 +387,6 @@ def sort():
 
 @app.route("/own_ads")
 def show_logged_users_ads():
-    sql = "SELECT c.brand, c.model, c.mileage, c.year, c.price, a.id, a.info, a.created FROM cars c, ads a WHERE " \
-          "a.user_id=:id AND c.id=a.car_id AND a.visible=:visible"
-    result = db.session.execute(sql, {"id":users.get_user_id(), "visible":False})
-    unactive_ads = result.fetchall()
-    result = db.session.execute(sql, {"id":users.get_user_id(), "visible":True})
-    active_ads = result.fetchall()
-    db.session.commit()
+    unactive_ads = ads.ads_by_user_id(users.get_user_id(), False)
+    active_ads = ads.ads_by_user_id(users.get_user_id(), True)
     return render_template("own_ads.html", unactive=unactive_ads, active=active_ads)

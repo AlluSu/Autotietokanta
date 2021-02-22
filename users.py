@@ -46,3 +46,17 @@ def get_user_info_by_id(id):
     info = result.fetchall()
     db.session.commit()
     return info
+
+def create_new_user(username, first_name, last_name, phone, email, location, hash_value):
+    sql = "INSERT INTO users (username, firstname, surname, telephone, email, location, admin, password) " \
+            "VALUES (:username, :firstname, :surname, :telephone, :email, :location, :admin, :password)"
+    db.session.execute(sql, {"username":username,"firstname":first_name,"surname":last_name, "telephone":phone,
+                    "email":email, "location":location, "admin":False, "password":hash_value})
+    db.session.commit()
+
+def update_user_info(user_id, first_name, last_name, phone, email, location):
+    sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
+            "location=:location WHERE id=:id"
+    db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone,
+                             "email":email, "location":location})
+    db.session.commit()
