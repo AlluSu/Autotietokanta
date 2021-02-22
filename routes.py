@@ -9,7 +9,7 @@ import equipment
 
 @app.route("/")
 def index():
-    car_list = cars.get_essential_car_data()
+    car_list = ads.get_essential_car_data()
     admin = users.is_admin(users.get_user_id())
     return render_template("index.html", cars=car_list, admin=admin)
 
@@ -71,8 +71,10 @@ def send():
     info = request.form["info"]
     if len(info) > 5000:
         return render_template("error.html", error="Teksti on liian pitkä")
-
-    ad_id = ads.add_ad_and_return_id(info, car_id)
+    try:
+        ad_id = ads.add_ad_and_return_id(info, car_id)
+    except:
+        return render_template("error.html", error="Virhe lisätessä ilmoitusta!")
     try:
         ads.create_reference(car_id, ad_id)
     except:
@@ -84,32 +86,30 @@ def send():
     except:
         return render_template("error.html", error="Virhe luodessa viitettä!")
 
-    #TODO: Into a module
-    #Image file data
     file = request.files["file"]
     name = file.filename
-    if file and not name.endswith(".jpg"):
-        return render_template("error.html", error="Väärä tiedostopääte")
-    data = file.read()
-    if len(data) > 100*1024:
-        return render_template("error.html", error="Liian iso tiedosto")
-    sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
-    result = db.session.execute(sql, {"name":name, "data":data})
-    image_id = result.fetchone()[0]
-
-    #Creating a relation between the image and the ad
-    sql = "INSERT INTO ad_images (image_id,ad_id) VALUES (:image_id,:ad_id)"
-    db.session.execute(sql, {"image_id":image_id, "ad_id":ad_id})
-    db.session.commit()
+    if file:
+        if not name.endswith(".jpg"):
+            return render_template("error.html", error="Väärä tiedostopääte")
+        data = file.read()
+        if len(data) > 100*1024:
+            return render_template("error.html", error="Liian iso tiedosto")
+        try:
+            ads.add_image(name, data, ad_id)
+        except:
+            return render_template("error.html", error="Kuvan lisäämisessä tapahtui virhe!")   
     flash("Uusi ilmoitus " + brand + " " + model + " lisätty onnistuneesti!")
     return redirect("/")
 
+
 @app.route("/logout")
 def logout():
-    if users.logout():
+    try:
+        users.logout()
         flash("Kirjauduttu ulos onnistuneesti!")
         return redirect("/")
-    return render_template("error.html", error="Virhe uloskirjautuessa!")
+    except:
+        return render_template("error.html", error="Virhe uloskirjautuessa!")
 
 @app.route("/ad/<int:id>")
 def ad_page(id):
@@ -216,16 +216,18 @@ def remove_ad(id):
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
     if users.is_admin(users.get_user_id()):
-        sql = "UPDATE ads SET visible=False WHERE ads.id=:id"
-        db.session.execute(sql, {"logged":users.get_user_id(), "id":id})
-        db.session.commit()
+        try:
+            ads.remove_ad_as_admin(id)
+        except:
+            return render_template("error.html", error="Virhe ilmoitusta poistettaessa!")
         flash("Ilmoitus poistettu onnistuneesti!")
         return redirect("/")
-    sql = "UPDATE ads SET visible=False WHERE user_id=:logged AND ads.id=:id"
-    db.session.execute(sql, {"logged":users.get_user_id(), "id":id})
-    db.session.commit()
-    flash("Ilmoitus poistettu onnistuneesti!")
-    return redirect("/")
+    try:
+        ads.remove_ad(id, users.get_user_id())
+        flash("Ilmoitus poistettu onnistuneesti!")
+        return redirect("/")
+    except:
+        return render_template("error.html", error="Virhe ilmoitusta poistettaessa!")
 
 @app.route("/update_car_info/<int:id>", methods=["POST"])
 def edit_car_info(id):
@@ -306,11 +308,7 @@ def result():
 @app.route("/sort")
 def sort():
     option = request.args["options"]
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
-          "c.id=a.car_id AND a.visible=True"
-    result = db.session.execute(sql)
-    ads = result.fetchall()
-    db.session.commit()
+    ads = ads.get_essential_car_data()
     admin = users.is_admin(users.get_user_id())
     if option == "year":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \

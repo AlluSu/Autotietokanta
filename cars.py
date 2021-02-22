@@ -1,14 +1,5 @@
 from db import db
 
-def get_essential_car_data():
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM " \
-          "cars c, ads a WHERE c.id=a.car_id " \
-          "AND a.visible=True ORDER BY a.created DESC"
-    result = db.session.execute(sql)
-    cars = result.fetchall()
-    db.session.commit()
-    return cars
-
 def get_car_id_by_ad_id(id):
     sql = "SELECT car_id FROM ads WHERE id=:id"
     result = db.session.execute(sql, {"id":id}).fetchone()

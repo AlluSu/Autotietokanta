@@ -24,13 +24,9 @@ def get_logged_user():
     return session.get("username",0)
 
 def logout():
-    try:
-        del session["user_id"]
-        del session["username"]
-        del session["csrf_token"]
-        return True
-    except:
-        return False
+    del session["user_id"]
+    del session["username"]
+    del session["csrf_token"]
 
 def is_admin(id):
     if id == 0:

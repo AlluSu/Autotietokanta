@@ -22,7 +22,6 @@ def get_equipment_id_by_name(name):
     return name
 
 def create_reference(checked_equipment, car_id):
-    #all = get_all_car_equipment()
     equipment_dict = {}
     for i in range(0, len(checked_equipment)):
         equipment_dict[i] = checked_equipment[i]
@@ -30,3 +29,4 @@ def create_reference(checked_equipment, car_id):
     for name in equipment_dict:
         eq = equipment_dict[name]
         db.session.execute(sql, {"car_id":car_id, "equipment_id":get_equipment_id_by_name(eq)})
+    db.session.commit()
