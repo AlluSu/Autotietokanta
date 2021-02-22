@@ -1,7 +1,7 @@
 from db import db
 from flask import session
 from os import urandom
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
 def login(username, password):
     sql = "SELECT password, id FROM users WHERE username=:username"
@@ -39,3 +39,10 @@ def is_admin(id):
     result = db.session.execute(sql, {"id":id})
     admin = result.fetchone()[0]
     return admin
+
+def get_user_info_by_id(id):
+    sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    info = result.fetchall()
+    db.session.commit()
+    return info

@@ -3,16 +3,13 @@ from flask import redirect, render_template, request, session, make_response, ab
 from werkzeug.security import generate_password_hash
 from db import db
 import users
+import cars
 
 @app.route("/")
 def index():
-    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM " \
-          "cars c, ads a WHERE c.id=a.car_id " \
-          "AND a.visible=True ORDER BY a.created DESC"
-    result = db.session.execute(sql)
-    cars = result.fetchall()
-    db.session.commit()
-    return render_template("index.html", cars=cars, admin=users.is_admin(users.get_user_id()))
+    car_list = cars.get_essential_car_data()
+    admin = users.is_admin(users.get_user_id())
+    return render_template("index.html", cars=car_list, admin=admin)
 
 @app.route("/login_user", methods=["POST"])
 def login_as_user():
@@ -29,6 +26,7 @@ def login_as_user():
 def login():
     return render_template("login.html")
 
+#equipment
 def get_all_car_equipment():
     sql = "SELECT * FROM equipment"
     result = db.session.execute(sql)
@@ -36,6 +34,7 @@ def get_all_car_equipment():
     db.session.commit()
     return equipment
 
+#equipment
 def get_car_equipment_by_id(id):
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
     result = db.session.execute(sql, {"id":id})
@@ -43,19 +42,13 @@ def get_car_equipment_by_id(id):
     db.session.commit()
     return equipment
 
+#equipment
 def get_equipment_id_by_name(name):
     sql = "SELECT id FROM equipment WHERE name=:name"
     result = db.session.execute(sql, {"name":name})
     name = result.fetchone()[0]
     db.session.commit()
     return name
-
-def get_user_info_by_id(id):
-    sql = "SELECT firstname, surname, telephone, email, location FROM users WHERE id=:id"
-    result = db.session.execute(sql, {"id":id})
-    info = result.fetchall()
-    db.session.commit()
-    return info
 
 @app.route("/new")
 def new_car_form():
@@ -151,21 +144,6 @@ def logout():
         return redirect("/")
     return render_template("error.html", error="Virhe uloskirjautuessa!")
 
-#car-related
-def get_car_id_by_ad_id(id):
-    sql = "SELECT car_id FROM ads WHERE id=:id"
-    result = db.session.execute(sql, {"id":id}).fetchone()
-    db.session.commit()
-    return result[0]
-
-#car-related
-def get_all_car_info_by_id(id):
-    sql = "SELECT * FROM cars WHERE id=:id"
-    result = db.session.execute(sql, {"id":id})
-    car_data = result.fetchall()
-    db.session.commit()
-    return car_data
-
 @app.route("/ad/<int:id>")
 def ad_page(id):
     #TODO: NEEDS REFACTORING (?)
@@ -175,17 +153,7 @@ def ad_page(id):
     ad_data = result.fetchall()
     db.session.commit()
 
-    #TODO: REMOVE IF UNNECESSARY
-    #Car_id
-    #sql = "SELECT car_id FROM ads WHERE id=:id"
-    #result = db.session.execute(sql, {"id":id}).fetchone()
-    #car_id = result[0]
-
-    #Car info
-    sql = "SELECT * FROM cars WHERE id=:id"
-    result = db.session.execute(sql, {"id":get_car_id_by_ad_id(id)})
-    car_data = result.fetchall()
-    db.session.commit()
+    car_data = cars.get_all_car_info_by_id(id)
 
     #Seller id
     sql = "SELECT user_id FROM ads a WHERE a.id=:id"
@@ -201,13 +169,14 @@ def ad_page(id):
     # TODO: REMOVE IF UNENCESSARY
     #Equipment info
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
-    result = db.session.execute(sql, {"id": get_car_id_by_ad_id(id)})
+    result = db.session.execute(sql, {"id": cars.get_car_id_by_ad_id(id)})
     cars_equipment = result.fetchall()
-    
     db.session.commit()
+    logged = users.get_user_id()
+    admin = users.is_admin(users.get_user_id())
     return render_template("ad_info.html",
-        specs=car_data, info=ad_data, seller=seller_data, logged=users.get_user_id(), id=seller_id,
-        equipment=cars_equipment, admin=users.is_admin(users.get_user_id()))
+        specs=car_data, info=ad_data, seller=seller_data, logged=logged, id=seller_id,
+        equipment=cars_equipment, admin=admin)
 
 @app.route("/ad_image/<int:id>")
 def show(id):
@@ -258,7 +227,7 @@ def create_new_user():
 
 @app.route("/userinfo")
 def show_user_data():
-    user = get_user_info_by_id(users.get_user_id())
+    user = users.get_user_info_by_id(users.get_user_id())
     return render_template("user_data.html", user=user)
 
 @app.route("/update_user_info", methods=["POST"])
