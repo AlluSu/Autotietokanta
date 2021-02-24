@@ -133,7 +133,6 @@ def ad_page(id):
     result = db.session.execute(sql, {"id":seller_id})
     seller_data = result.fetchall()
 
-    # TODO: REMOVE IF UNENCESSARY
     #Equipment info
     sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
     result = db.session.execute(sql, {"id": cars.get_car_id_by_ad_id(id)})
@@ -205,7 +204,7 @@ def update_user_info():
     email = request.form["email"]
     try:
         users.update_user_info(users.get_user_id(), first_name.strip(), last_name.strip(), location.strip(),
-                               location.strip(), phone.strip(), email.strip())
+                               phone.strip(), email.strip())
         flash("Käyttäjätiedot päivitetty onnistuneesti!")
         return redirect("/")
     except:
@@ -293,6 +292,7 @@ def update(id):
 
 @app.route("/search")
 def result():
+    #TODO: FIX
     query = request.args["query"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
           "a.info LIKE :query AND a.visible=:visible"

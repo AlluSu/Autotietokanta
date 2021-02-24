@@ -5,12 +5,14 @@
     {% extends "layout.html" %}
     {% block title %}Etusivu{% endblock %}
     {% block content %}
+<div id="x">
     <h1>Tervetuloa AutoNettiin!</h1>
 {% if session.user_id %}
 <p><b>Kirjautuneena:</b> {{ session.username }}</p>
 {% if admin %}
 <p><b>Status: Admin</b></p>
 {% endif %}
+</div>
 <div>
     <nav>
         <ul>
@@ -30,11 +32,13 @@
     </nav>
 </div>
 {% else %}
+<div>
 <p>Kirjaudu sisään <a href="/login">tästä</a>:</p>
 <p>
 Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 </p>
 {% endif %}
+</div>
 <div>
 <form action="/sort" method="GET">
 <label for="options">Lajittele:</label>

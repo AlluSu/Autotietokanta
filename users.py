@@ -50,9 +50,9 @@ def create_new_user(username, first_name, last_name, phone, email, location, has
                     "email":email, "location":location, "admin":False, "password":hash_value})
     db.session.commit()
 
-def update_user_info(user_id, first_name, last_name, phone, email, location):
+def update_user_info(user_id, first_name, last_name, location, phone, email):
     sql = "UPDATE users SET firstname=:firstname, surname=:surname, telephone=:telephone, email=:email, " \
             "location=:location WHERE id=:id"
-    db.session.execute(sql, {"id":user_id(), "firstname":first_name, "surname":last_name, "telephone":phone,
+    db.session.execute(sql, {"id":user_id, "firstname":first_name, "surname":last_name, "telephone":phone,
                              "email":email, "location":location})
     db.session.commit()

@@ -7,43 +7,35 @@
 {% block content %}
 <h2>Muokkaa tietojasi</h2>
 <hr>
+<div>
 <form action="/update_user_info" method="POST">
-{% for i in user %}
-<table>
-    <tr>
-        <th>
+    <ul style="list-style-type:none">
+        {% for i in user %}
+        <li>            
             <label for="fname">Etunimi: </label>
             <input type="text" id="fname" name="fname" value="{{ i[0] }}" required>
-        </th>
-    </tr>
-    <tr>
-        <th>
+        </li>
+        <li>
             <label for="sname">Sukunimi: </label>
             <input type="text" id="sname" name="sname" value="{{ i[1] }}" required>
-        </th>
-    </tr>
-    <tr>
-        <th>
+        </li>
+        <li>
             <label for="tel">Puhelinnumero: </label>
             <input type="tel" id="tel" name="tel" value="{{ i[2] }}" required>
-        </th>
-    </tr>
-    <tr>
-        <th>
+        </li>
+        <li>
             <label for="email">Sähköposti: </label>
             <input type="email" id="email" name="email" value="{{ i[3] }}">
-        </th>
-    </tr>
-    <tr>
-        <th>
+        </li>
+        <li>
             <label for="location">Paikkakunta: </label>
             <input type="location" id="location" name="location" value="{{ i[4] }}">
-        </th>
-    </tr>
-</table>
+        </li>
+    </ul>
 <input type="submit" value="Lähetä">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 {% endfor %}
 </form>
+</div>
 {% endblock %}
 </body>
