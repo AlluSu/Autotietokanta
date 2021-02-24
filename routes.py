@@ -292,11 +292,10 @@ def update(id):
 
 @app.route("/search")
 def result():
-    #TODO: FIX
     query = request.args["query"]
     sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
-          "a.info LIKE :query AND a.visible=:visible"
-    result = db.session.execute(sql, {"query":'%'+query+'%', "visible":True})
+          "c.id=a.car_id AND a.info LIKE :query AND a.visible=True"
+    result = db.session.execute(sql, {"query":'%'+query+'%'})
     ads = result.fetchall()
     db.session.commit()
     return render_template("index.html", cars=ads)
