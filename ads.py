@@ -1,4 +1,4 @@
-from flask.templating import render_template
+from flask import render_template, redirect
 from db import db
 import users
 
@@ -68,7 +68,9 @@ def get_data_by_query(query):
 
 def get_data_by_option(option):
     ads = ""
-    if option == "year":
+    if option == "none":
+        ads = get_essential_car_data()
+    elif option == "year":
         sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
               "c.id=a.car_id AND a.visible=True ORDER BY year"
         result = db.session.execute(sql)
@@ -129,3 +131,17 @@ def get_data_by_option(option):
         ads = result.fetchall()
         db.session.commit()  
     return ads
+
+def get_add_data_by_id(ad_id):
+    sql = "SELECT id, info, created, user_id, car_id FROM ads WHERE id=:id"
+    result = db.session.execute(sql, {"id":ad_id})
+    data = result.fetchall()
+    db.session.commit()
+    return data
+
+def get_user_id_by_ad_id(ad_id):
+    sql = "SELECT user_id FROM ads a WHERE a.id=:id"
+    result = db.session.execute(sql, {"id":ad_id}).fetchone()
+    id = result[0]
+    db.session.commit()
+    return id

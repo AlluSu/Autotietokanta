@@ -113,31 +113,12 @@ def logout():
 
 @app.route("/ad/<int:id>")
 def ad_page(id):
-    #TODO: NEEDS REFACTORING (?)
-    #Ad info
-    sql = "SELECT id, info, created, user_id, car_id FROM ads WHERE id=:id"
-    result = db.session.execute(sql, {"id":id})
-    ad_data = result.fetchall()
-    db.session.commit()
-
-    car_data = cars.get_all_car_info_by_id(id)
-
-    #Seller id
-    sql = "SELECT user_id FROM ads a WHERE a.id=:id"
-    result = db.session.execute(sql, {"id":id}).fetchone()
-    seller_id = result[0]
-    db.session.commit()
-
-    #Seller info
-    sql = "SELECT u.firstname, u.surname, u.telephone, u.email, u.location FROM users u WHERE u.id=:id"
-    result = db.session.execute(sql, {"id":seller_id})
-    seller_data = result.fetchall()
-
-    #Equipment info
-    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND ce.equipment_id=e.id"
-    result = db.session.execute(sql, {"id": cars.get_car_id_by_ad_id(id)})
-    cars_equipment = result.fetchall()
-    db.session.commit()
+    ad_data = ads.get_add_data_by_id(id)
+    car_id = cars.get_car_id_by_ad_id(id)
+    car_data = cars.get_all_car_info_by_id(car_id)
+    seller_id = ads.get_user_id_by_ad_id(id)
+    seller_data = users.get_user_info_by_id(seller_id)
+    cars_equipment = equipment.get_car_equipment_by_id(car_id)
     logged = users.get_user_id()
     admin = users.is_admin(users.get_user_id())
     return render_template("ad_info.html",
@@ -301,9 +282,6 @@ def result():
 def sort():
     option = request.args["options"]
     admin = users.is_admin(users.get_user_id())
-    if (str(option) == ""):
-        car_ads = ads.get_essential_car_data()
-        return render_template("/index.html", admin=admin, cars=car_ads)
     car_ads = ads.get_data_by_option(str(option))
     return render_template("/index.html", admin=admin, cars=car_ads)
 
