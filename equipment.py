@@ -30,3 +30,11 @@ def create_reference(checked_equipment, car_id):
         eq = equipment_dict[name]
         db.session.execute(sql, {"car_id":car_id, "equipment_id":get_equipment_id_by_name(eq)})
     db.session.commit()
+
+def update_equipment(equipment, id):
+    sql = "DELETE FROM car_equipment WHERE car_id=:id"
+    db.session.execute(sql, {"id":id})
+    for i in equipment:
+        sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
+        db.session.execute(sql, {"car_id":id, "equipment_id":get_equipment_id_by_name(i)})
+    db.session.commit()

@@ -145,3 +145,7 @@ def get_user_id_by_ad_id(ad_id):
     id = result[0]
     db.session.commit()
     return id
+
+def update_info(info, car_id):
+    sql = "UPDATE ads SET info=:info WHERE ads.car_id=:id"
+    db.session.execute(sql, {"info":info, "id":car_id})

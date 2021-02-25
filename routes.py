@@ -127,7 +127,7 @@ def ad_page(id):
 
 @app.route("/ad_image/<int:id>")
 def show(id):
-    #TODO: FIX
+    #TODO: FIX AND REMOVE TO OWN MODULE
     sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
     image_id = result.fetchone()[0]
@@ -234,40 +234,42 @@ def update(id):
     fuel = request.form["fuel"]
     drive = request.form["drive"]
     transmission = request.form["transmission"]
-    #TODO: checks
     mileage = request.form["mileage"]
+    if int(mileage) > 10000000 or int(mileage) < 0:
+        return render_template("error.html", error="Mittarilukema ei ole sallitulla välillä!")
     year = request.form["year"]
+    if int(year) > 2021 or int(year) < 1900:
+        return render_template("error.html", error="Vuosimalli ei ole sallitulla välillä!")
     price = request.form["price"]
+    if int(price) > 10000000 or int(price) < 1:
+        return render_template("error.html", error="Hinta ei ole sallitulla välillä!")
     color = request.form["color"]
     if len(color.strip()) < 1:
         return render_template("error.html", error="Väri ei voi olla tyhjä!")
     engine = request.form["engine"]
+    if int(engine) > 10000 or int(engine) < 100:
+        return render_template("error.html", error="Moottorin tilavuus ei ole sallitulla välillä!")
     power = request.form["power"]
+    if int(power) > 2000 or int(power) < 0:
+        return render_template("error.html", error="Teho ei ole sallitulla välillä!")
     legal = request.form["legal"]
     info = request.form["info"]
+    checked_equipment = request.form.getlist("varusteet")
     if len(info.strip()) > 5000:
         return render_template("error.html", error="Liikaa tekstiä tekstikentässä!")
-
-    #car data
-    sql = "UPDATE cars SET brand=:brand, model=:model, chassis=:chassis, fuel=:fuel, drive=:drive, " \
-          "transmission=:transmission, mileage=:mileage, year=:year, price=:price, color=:color, " \
-          "engine=:engine, power=:power, street_legal=:legal WHERE id=:id"
-    db.session.execute(sql, {"brand":brand.strip(), "model":model.strip(), "chassis":chassis, "fuel":fuel, "drive":drive,
-                             "transmission":transmission, "mileage":mileage, "year":year, "price":price,
-                             "color":color.strip(), "engine":engine, "power":power, "legal":legal, "id":id})
-    
-    #ad data
-    sql = "UPDATE ads SET info=:info WHERE ads.car_id=:id"
-    db.session.execute(sql, {"info":info.strip(), "id":id})
-
-    #Equipment data
-    sql = "DELETE FROM car_equipment WHERE car_id=:id"
-    db.session.execute(sql, {"id":id})
-    eq = request.form.getlist("varusteet")
-    for i in eq:
-        sql = "INSERT INTO car_equipment (car_id, equipment_id) VALUES (:car_id, :equipment_id)"
-        db.session.execute(sql, {"car_id":id, "equipment_id":equipment.get_equipment_id_by_name(i)})
-    db.session.commit()
+    try:
+        cars.update_car_data(brand.strip(), model.strip(), chassis, fuel, drive, transmission, mileage, year,
+                            price, color.strip(), engine, power, legal, id)
+    except:
+        return render_template("error.html", error="Tapahtui virhe lisätessä autoa!")
+    try:
+        ads.update_info(info.strip(), id)
+    except:
+        return render_template("error.html", error="Tapahtui virhe lisätessä autoa!")
+    try:
+        equipment.update_equipment(checked_equipment, id)
+    except:
+        return render_template("error.html", error="Tapahtui virhe lisätessä autoa!")
     flash("Ilmoituksen " + brand + " " + model + " päivitys onnistui!")
     return redirect("/")
 

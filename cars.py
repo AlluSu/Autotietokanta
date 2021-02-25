@@ -24,3 +24,11 @@ def add_car_and_return_id(brand, model, chassis, fuel, drive, transmission, mile
                                       "engine":engine, "power":power, "street_legal":legal})
     car_id = result.fetchone()[0]
     return car_id
+
+def update_car_data(brand, model, chassis, fuel, drive, transmission, mileage, year, price, color, engine, power, legal, id):
+    sql = "UPDATE cars SET brand=:brand, model=:model, chassis=:chassis, fuel=:fuel, drive=:drive, " \
+          "transmission=:transmission, mileage=:mileage, year=:year, price=:price, color=:color, " \
+          "engine=:engine, power=:power, street_legal=:legal WHERE id=:id"
+    db.session.execute(sql, {"brand":brand, "model":model, "chassis":chassis, "fuel":fuel, "drive":drive,
+                             "transmission":transmission, "mileage":mileage, "year":year, "price":price,
+                             "color":color, "engine":engine, "power":power, "legal":legal, "id":id})
