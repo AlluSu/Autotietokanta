@@ -94,10 +94,9 @@ def send():
         data = file.read()
         if len(data) > 100*1024:
             return render_template("error.html", error="Liian iso tiedosto")
-        try:
-            ads.add_image(name, data, ad_id)
-        except:
-            return render_template("error.html", error="Kuvan lisäämisessä tapahtui virhe!")   
+        success = ads.add_image(name, data, ad_id)
+        if success:
+            print("onnistui")
     flash("Uusi ilmoitus " + brand + " " + model + " lisätty onnistuneesti!")
     return redirect("/")
 
@@ -128,12 +127,17 @@ def ad_page(id):
 @app.route("/ad_image/<int:id>")
 def show(id):
     #TODO: FIX AND REMOVE TO OWN MODULE
+    print(id)
     sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
     image_id = result.fetchone()[0]
+    print(result.fetchall())
+    print(image_id)
     sql = "SELECT data FROM images WHERE id=:id"
     result = db.session.execute(sql,{"id":image_id})
     image = result.fetchone()[0]
+    print(result.fetchall())
+    print(image)
     response = make_response(bytes(image))
     print(response)
     response.headers.set("Content-Type", "image/jpeg")
