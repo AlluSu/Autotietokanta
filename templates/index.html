@@ -64,9 +64,9 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
     <input type="submit" value="Etsi">
 </form>
 </div>
+<div>
 <h3>Myytävät autot:</h3>
 <hr>
-<div>
 {% for car in cars %}
 <ul style="list-style-type:none">
     <li>
@@ -89,7 +89,7 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
     </li>
 <hr>
 </ul>
-</div>
 {% endfor %}
+</div>
 {% endblock %}
 </body>
