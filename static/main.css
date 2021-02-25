@@ -4,11 +4,17 @@ body {
 
 div {
     margin:auto;
-    padding-left: 2em;
-    margin-left: 2em;
 }
 
-h1, h2, h3 {
+h1 {
+    margin:auto;
+}
+
+h2 {
+    margin:auto;
+}
+
+h3 {
     margin:auto;
 }
 

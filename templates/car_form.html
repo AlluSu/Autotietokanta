@@ -5,6 +5,7 @@
     {% extends "layout.html" %}
     {% block title %}Tietojen täyttäminen{% endblock %}
     {% block content %}
+    <div>
 <form action="/send" method="POST" enctype="multipart/form-data">
 <h2>Syötä auton tiedot:</h2>
 <p>
@@ -150,5 +151,6 @@ oltava <i>.jpg</i>.
 <input type="reset" value="Tyhjennä">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
+</div>
 {% endblock %}
 </body>
