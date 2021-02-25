@@ -5,13 +5,15 @@ body {
 
 div {
     margin:auto;
+    padding-left: 2em;
+    margin-left: 2em;
+}
+
+h2 {
+    margin:auto;
 }
 
 nav li {
     display: inline-block;
     padding: 0 .5em;
-}
-
-#x {
-    padding-left: 2em;
 }

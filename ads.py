@@ -57,3 +57,75 @@ def get_logged_users_ad_data(car_id, logged):
     ad_data = result.fetchall()
     db.session.commit()
     return ad_data
+
+def get_data_by_query(query):
+    sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+          "c.id=a.car_id AND a.info ILIKE :query AND a.visible=True"
+    result = db.session.execute(sql, {"query":'%'+query+'%'})
+    ads = result.fetchall()
+    db.session.commit()
+    return ads
+
+def get_data_by_option(option):
+    ads = ""
+    if option == "year":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY year"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "year DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY year DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "brand":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY brand, model"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "brand DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY brand DESC, model DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "mileage":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY mileage"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "mileage DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY mileage DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "price":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY price"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "price DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY price DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "created":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY created"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()
+    elif option == "created DESC":
+        sql = "SELECT c.id, c.brand, c.model, c.mileage, c.year, c.price FROM cars c, ads a WHERE " \
+              "c.id=a.car_id AND a.visible=True ORDER BY created DESC"
+        result = db.session.execute(sql)
+        ads = result.fetchall()
+        db.session.commit()  
+    return ads
