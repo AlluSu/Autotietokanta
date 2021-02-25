@@ -53,15 +53,15 @@ Ei
 <hr>
 {% if logged == id%}
 {% for i in info %}
+<form action="/update_car_info/{{ i[0] }}" method="POST">
+    <input type="submit" value="Muokkaa ilmoitusta">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+{% endfor %}
+{% for i in info %}
 <form action="/remove_ad/{{ i[0]  }}" method="POST">
     <input type="submit" value="Poista ilmoitus">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-</form>
-{% endfor %}
-{% for i in info %}
-<form action="/update_car_info/{{ i[0] }}" method="POST">
-<input type="submit" value="Muokkaa ilmoitusta">
-<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% endfor %}
 {% elif admin %}
