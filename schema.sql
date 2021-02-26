@@ -36,11 +36,6 @@ CREATE TABLE ads (
     car_id INTEGER REFERENCES cars
 );
 
-CREATE TABLE car_ad (
-    car_id INTEGER REFERENCES cars,
-    ad_id INTEGER REFERENCES ads
-);
-
 CREATE TABLE equipment (
     id SERIAL PRIMARY KEY,
     name TEXT UNIQUE
@@ -58,7 +53,16 @@ INSERT INTO equipment (name) VALUES ('Huoltokirja');
 INSERT INTO equipment (name) VALUES ('Luistonestojärjestelmä');
 INSERT INTO equipment (name) VALUES ('ABS-jarrut');
 INSERT INTO equipment (name) VALUES ('Pysäköintitutka');
-INSERT INTO equipment (name) VALUES ('Sähkösäätöiset penkit');
+INSERT INTO equipment (name) VALUES ('Sähkösäätöiset istuimet');
+INSERT INTO equipment (name) VALUES ('Pysäköintitutka');
+INSERT INTO equipment (name) VALUES ('Peruutuskamera');
+INSERT INTO equipment (name) VALUES ('Xenon-ajovalot');
+INSERT INTO equipment (name) VALUES ('Ajonvakautusjärjestelmä');
+INSERT INTO equipment (name) VALUES ('Kevytmetallivanteet');
+INSERT INTO equipment (name) VALUES ('Urheilullinen alusta');
+INSERT INTO equipment (name) VALUES ('Suksiluukku');
+INSERT INTO equipment (name) VALUES ('Turvatyynyt');
+INSERT INTO equipment (name) VALUES ('Ajotietokone');
 
 CREATE TABLE car_equipment (
     car_id INTEGER REFERENCES cars,

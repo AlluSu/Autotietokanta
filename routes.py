@@ -74,10 +74,6 @@ def send():
         ad_id = ads.add_ad_and_return_id(info, car_id)
     except:
         return render_template("error.html", error="Virhe lisätessä ilmoitusta!")
-    try:
-        ads.create_reference(car_id, ad_id)
-    except:
-        return render_template("error.html", error="Virhe luodessa viitettä!")
     checked_equipment = request.form.getlist("eq")
     try:
         equipment.create_reference(checked_equipment, car_id)
@@ -116,7 +112,6 @@ def ad_page(id):
     seller_id = ads.get_user_id_by_ad_id(id)
     seller_data = users.get_user_info_by_id(seller_id)
     cars_equipment = equipment.get_car_equipment_by_id(car_id)
-   # ad_image = ads.image_exists(id)
     logged = users.get_user_id()
     admin = users.is_admin(logged)
     return render_template("ad_info.html",
@@ -125,8 +120,6 @@ def ad_page(id):
 
 @app.route("/ad_image/<int:id>")
 def show(id):
-    if ads.show_ad_image(id) is None:
-        return render_template("error.html", error="Ilmoituksessa ei ole kuvaa!")
     return ads.show_ad_image(id)
 
 @app.route("/register", methods=["GET","POST"])
