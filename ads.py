@@ -152,7 +152,24 @@ def update_info(info, car_id):
 def show_ad_image(id):
     sql = "SELECT i.data FROM images i, ad_images ai WHERE ai.ad_id=:id AND ai.image_id=i.id"
     result = db.session.execute(sql, {"id":id})
+    print(result.fetchone())
+    if result.fetchone() is None:
+        return None
     image = result.fetchone()[0]
     response = make_response(bytes(image))
     response.headers.set("Content-Type", "image/jpeg")
     return response
+
+def image_exists(id):
+    sql = "SELECT i.name FROM images i, ad_images ai WHERE ai.ad_id=:id AND ai.image_id=i.id"
+    result = db.session.execute(sql, {"id":id})
+    print(result)
+    print(result.fetchone())
+    print(result.fetchall())
+    if result.fetchone()[0] == None:
+        return None
+    name = result.fetchone()[0]
+    sql = "SELECT id FROM images WHERE name=:name"
+    result = db.session.execute(sql, {"name":name})
+    image_id = result.fetchone()[0]
+    return image_id
