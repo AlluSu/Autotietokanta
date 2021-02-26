@@ -5,6 +5,20 @@ body {
 
 div {
     margin:auto;
+    margin-left: 2em;
+    padding-left: 1em;
+}
+
+h1 {
+    margin:auto;
+}
+
+h2 {
+    margin:auto;
+}
+
+h3 {
+    margin:auto;
 }
 
 nav li {
