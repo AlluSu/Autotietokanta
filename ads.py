@@ -12,14 +12,6 @@ def remove_ad_as_admin(ad_id):
     db.session.execute(sql, {"id":ad_id})
     db.session.commit()
 
-def add_image(name, data, ad_id):
-    sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
-    result = db.session.execute(sql, {"name":name, "data":data})
-    image_id = result.fetchone()[0]
-    sql = "INSERT INTO ad_images (image_id,ad_id) VALUES (:image_id,:ad_id)"
-    db.session.execute(sql, {"image_id":image_id, "ad_id":ad_id})
-    db.session.commit()
-
 def add_ad_and_return_id(info, car_id):
     sql = "INSERT INTO ads (info, created, visible, user_id, car_id) VALUES " \
           "(:info, NOW(), :visible, :user_id, :car_id) RETURNING id"
@@ -148,6 +140,7 @@ def update_info(info, car_id):
 def show_ad_image(id):
     sql = "SELECT i.data FROM images i, ad_images ai WHERE ai.ad_id=:id AND ai.image_id=i.id"
     result = db.session.execute(sql, {"id":id})
+    db.session.commit()
     print(result.fetchone())
     if result.fetchone() is None:
         return None
@@ -155,6 +148,15 @@ def show_ad_image(id):
     response = make_response(bytes(image))
     response.headers.set("Content-Type", "image/jpeg")
     return response
+
+def add_image(name, data, ad_id):
+    sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
+    result = db.session.execute(sql, {"name":name, "data":data})
+    image_id = result.fetchone()[0]
+    db.session.commit()
+    sql = "INSERT INTO ad_images (image_id,ad_id) VALUES (:image_id,:ad_id)"
+    db.session.execute(sql, {"image_id":image_id, "ad_id":ad_id})
+    db.session.commit()
 
 def image_exists(id):
     sql = "SELECT i.name FROM images i, ad_images ai WHERE ai.ad_id=:id AND ai.image_id=i.id"

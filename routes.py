@@ -120,7 +120,9 @@ def ad_page(id):
 
 @app.route("/ad_image/<int:id>")
 def show(id):
-    return ads.show_ad_image(id)
+    response = ads.show_ad_image(id)
+    pritn(response)
+    return response
 
 @app.route("/register", methods=["GET","POST"])
 def register():
