@@ -1,14 +1,14 @@
 from db import db
 
 def get_all_car_equipment():
-    sql = "SELECT * FROM equipment"
+    sql = "SELECT * FROM equipment ORDER BY name"
     result = db.session.execute(sql)
     equipment = result.fetchall()
     db.session.commit()
     return equipment
 
 def get_car_equipment_by_id(id):
-    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id"
+    sql = "SELECT e.name FROM equipment e, car_equipment ce WHERE ce.car_id=:id AND e.id=ce.equipment_id ORDER BY e.name"
     result = db.session.execute(sql, {"id":id})
     equipment = result.fetchall()
     db.session.commit()

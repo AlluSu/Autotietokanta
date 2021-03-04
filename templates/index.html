@@ -8,7 +8,7 @@
     {% block content %}
 </head>
 <div>
-    <h1>Tervetuloa AutoNettiin!</h1>
+    <h1 id="index-header">Tervetuloa AutoNettiin!</h1>
 {% if session.user_id %}
 <p><b>Kirjautuneena:</b> {{ session.username }}</p>
 {% if admin %}
@@ -44,7 +44,7 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 <div>
 <form action="/sort" method="GET">
 <label for="options">Lajittele:</label>
-<select name="options" id="cars">
+<select id="sort-bar" name="options" id="cars">
     <option value="none">Oletus</option>
     <option value="brand">Merkki: (A-Z)</option>
     <option value="brand DESC">Merkki: (Z-A)</option>
@@ -57,13 +57,14 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
     <option value="created">Ilmoitus: (vanhin ensin)</option>
     <option value="created DESC">Ilmoitus: (uusin ensin)</option>
 </select>
-<input type="submit" value="Lajittele">
+<input id="sort-button" type="submit" value="Lajittele">
 </form>
 </div>
 <div>
 <form action="/search" method="GET">
-    Hae ilmoituksista hakusanalla: <input type="text" name="query">
-    <input type="submit" value="Etsi">
+    Hae ilmoituksista hakusanalla:
+    <input id="search-bar" type="text" name="query">
+    <input id="search-button" type="submit" value="Etsi">
 </form>
 </div>
 <div>

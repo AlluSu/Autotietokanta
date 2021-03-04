@@ -1,5 +1,6 @@
 body {
-    background-color: rgb(250, 250, 250);
+    background-color: rgb(246, 246, 246);
+    font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
 div {
@@ -11,4 +12,22 @@ div {
 nav li {
     display: inline-block;
     padding: 0 .5em;
+}
+
+#header, #index-header {
+    color: rgb(240, 119, 6)
+}
+
+#login-button, #search-button, #sort-button, #add-car-button, #empty-car-button {
+    padding: 5px;
+    text-align: center;
+    width: 10em;
+}
+
+input {
+    padding:5px;
+}
+
+#sort-bar {
+    padding: 5px;
 }
