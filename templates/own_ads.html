@@ -8,6 +8,7 @@
 <div>
 <h2>Aktiiviset</h2>
 <hr>
+{% if active %}
 <ul style="list-style-type:none">
     {% for i in active %}
 <li><b>Merkki: </b> {{ i[0] }} <br></li>
@@ -19,10 +20,14 @@
 <hr>
 {% endfor %}
 </ul>
+{% else %}
+<p>Ei aktiivisia ilmoituksia</p>
+{% endif %}
 </div>
 <div>
     <h2>Menneet</h2>
     <hr>
+    {% if unactive %}
 <ul style="list-style-type:none">
     {% for i in unactive %}
 <li><b>Merkki: </b> {{ i[0] }}</li>
@@ -34,6 +39,9 @@
 <hr>
 {% endfor %}
 </ul>
+{% else %}
+<p>Ei vanhoja ilmoituksia</p>
+{% endif %}
 </div>
 {% endblock %}
 </body>

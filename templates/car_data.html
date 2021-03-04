@@ -155,10 +155,14 @@
     </p>
     {% endfor %}
     <h3>Viimeeksi merkityt varusteet:</h3>
+    {% if not car_spesific_equipment %}
+    <p>Ei varusteita</p>
+    {% else %}
     {% for i in car_spesific_equipment %}
     {{ i[0] }}
     <br>
     {% endfor %}
+    {% endif %}
     <h3>Merkitse varusteet:</h3>
     <ul style="list-style-type:none;">
         {% for e in equipment %}

@@ -1,5 +1,4 @@
 from flask import make_response
-from flask.templating import render_template
 from db import db
 import users
 

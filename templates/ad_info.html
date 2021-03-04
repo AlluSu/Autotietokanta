@@ -15,9 +15,9 @@
 <b>Käyttövoima: </b>{{ spec[4] }} <br>
 <b>Vetotapa: </b>{{ spec[5] }} <br>
 <b>Vaihteisto: </b>{{ spec[6] }} <br>
-<b>Mittarilukema: </b>{{ spec[7] }} <br>
+<b>Mittarilukema (km): </b>{{ spec[7] }}<br>
 <b>Vuosimalli: </b>{{ spec[8] }} <br>
-<b>Hinta (€): </b>{{ spec[9] }} <br>
+<b>Hinta (€): </b>{{ spec[9] }} euroa<br>
 <b>Väri: </b>{{ spec[10] }} <br>
 <b>Moottorin tilavuus (cm³): </b>{{ spec[11] }} <br>
 <b>Teho (kW): </b>{{ spec[12] }} <br>
@@ -30,10 +30,15 @@ Ei
 {% endfor %}
 <hr>
 <h3>Varusteet:</h3>
+{% if equipment %}
 {% for e in equipment %}
 {{ e[0] }} <br>
 {% endfor %}
+{% else %}
+Ei varusteita
+{% endif %}
 <hr>
+{% if image %}
 <h3>Auton kuva</h3>
 {% for i in info %}
 <a href="/ad_image/{{ i[0] }}">Kuva</a>
@@ -42,6 +47,14 @@ Ei
 <h3>Ilmoitus jätetty:</h3>
 {{ i[2].strftime("%Y-%m-%d") }}
 {% endfor %}
+{% else %}
+{% for i in info %}
+<h3>Lisätiedot:</h3>
+{{ i[1] }}
+<h3>Ilmoitus jätetty:</h3>
+{{ i[2].strftime("%Y-%m-%d") }}
+{% endfor %}
+{% endif %}
 <hr>
 <h3>Ilmoittajan tiedot:</h3>
 {% for info in seller %}

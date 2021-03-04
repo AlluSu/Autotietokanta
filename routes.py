@@ -114,8 +114,9 @@ def ad_page(id):
     cars_equipment = equipment.get_car_equipment_by_id(car_id)
     logged = users.get_user_id()
     admin = users.is_admin(logged)
+    image = ads.image_exists(id)
     return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data,
-                            logged=logged, id=seller_id, equipment=cars_equipment, admin=admin)
+                            logged=logged, id=seller_id, equipment=cars_equipment, admin=admin, image=image)
 
 @app.route("/ad_image/<int:id>")
 def show(id):
@@ -218,8 +219,9 @@ def edit_car_info(id):
     car_spesific_equipment = equipment.get_car_equipment_by_id(id)
     logged = users.get_user_id()
     ad_data = ads.get_logged_users_ad_data(id, logged)
+    image = ads.image_exists(id)
     return render_template("car_data.html", data=ad_data, equipment=all_equipment,
-                            car_spesific_equipment=car_spesific_equipment)
+                            car_spesific_equipment=car_spesific_equipment, image=image)
 
 @app.route("/update/<int:id>", methods=["POST"])
 def update(id):

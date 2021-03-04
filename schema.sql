@@ -54,7 +54,6 @@ INSERT INTO equipment (name) VALUES ('Luistonestojärjestelmä');
 INSERT INTO equipment (name) VALUES ('ABS-jarrut');
 INSERT INTO equipment (name) VALUES ('Pysäköintitutka');
 INSERT INTO equipment (name) VALUES ('Sähkösäätöiset istuimet');
-INSERT INTO equipment (name) VALUES ('Pysäköintitutka');
 INSERT INTO equipment (name) VALUES ('Peruutuskamera');
 INSERT INTO equipment (name) VALUES ('Xenon-ajovalot');
 INSERT INTO equipment (name) VALUES ('Ajonvakautusjärjestelmä');
