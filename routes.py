@@ -65,8 +65,8 @@ def send():
     if int(power) < 0 or int(power) > 2000:
         return render_template("error.html", error="Moottorin teho ei ole sallitulla välillä!")
     legal = request.form["legal"]
-    car_id = cars.add_car_and_return_id(brand.strip(), model.strip(), chassis, fuel, drive, transmission, mileage,
-                year, price, color.strip(), engine, power, legal)
+    car_id = cars.add_car_and_return_id(brand.strip(), model.strip(), chassis, fuel, drive, transmission,
+                                        mileage, year, price, color.strip(), engine, power, legal)
     info = request.form["info"]
     if len(info) > 5000:
         return render_template("error.html", error="Teksti on liian pitkä")
@@ -114,14 +114,14 @@ def ad_page(id):
     cars_equipment = equipment.get_car_equipment_by_id(car_id)
     logged = users.get_user_id()
     admin = users.is_admin(logged)
-    return render_template("ad_info.html",
-        specs=car_data, info=ad_data, seller=seller_data, logged=logged, id=seller_id,
-        equipment=cars_equipment, admin=admin)
+    return render_template("ad_info.html", specs=car_data, info=ad_data, seller=seller_data,
+                            logged=logged, id=seller_id, equipment=cars_equipment, admin=admin)
 
 @app.route("/ad_image/<int:id>")
 def show(id):
     response = ads.show_ad_image(id)
-    pritn(response)
+    if response is None:
+        return render_template("error.html", error="Ei kuvaa")
     return response
 
 @app.route("/register", methods=["GET","POST"])
@@ -143,12 +143,18 @@ def create_new_user():
     if len(last_name.strip()) < 1:
         return render_template("error.html", error="Sukunimi ei voi olla tyhjä!")
     location = request.form["location"]
+    if len(location.strip()) < 1:
+        return render_template("error.html", error="Sijainti ei voi olla tyhjä!")
     phone = request.form["tel"]
+    if len(phone.strip()) < 1:
+        return render_template("error.html", error="Puhelinnumero ei voi olla tyhjä!")
     email = request.form["email"]
+    if len(email.strip()) < 1:
+        return render_template("error.html", error="Sähköposti ei voi olla tyhjä!")
     hash_value = generate_password_hash(password)
     try:
         users.create_new_user(username.strip(), first_name.strip(), last_name.strip(), phone.strip(),
-                        email.strip(), location.strip(), hash_value)
+                              email.strip(), location.strip(), hash_value)
         flash("Uusi käyttäjä " + username + " luotu onnistuneesti!")
         return redirect("/")
     except:
@@ -164,10 +170,20 @@ def update_user_info():
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
     first_name = request.form["fname"]
+    if len(first_name.strip()) < 1:
+        return render_template("error.html", error="Etunimi ei voi olla tyhjä!")
     last_name = request.form["sname"]
+    if len(last_name.strip()) < 1:
+        return render_template("error.html", error="Sukunimi ei voi olla tyhjä!")
     location = request.form["location"]
+    if len(location.strip()) < 1:
+        return render_template("error.html", error="Sijainti ei voi olla tyhjä!")
     phone = request.form["tel"]
+    if len(phone.strip()) < 1:
+        return render_template("error.html", error="Puhelinnumero ei voi olla tyhjä!")
     email = request.form["email"]
+    if len(email.strip()) < 1:
+        return render_template("error.html", error="Sähköposti ei voi olla tyhjä!")
     try:
         users.update_user_info(users.get_user_id(), first_name.strip(), last_name.strip(), location.strip(),
                                phone.strip(), email.strip())
@@ -244,7 +260,7 @@ def update(id):
         return render_template("error.html", error="Liikaa tekstiä tekstikentässä!")
     try:
         cars.update_car_data(brand.strip(), model.strip(), chassis, fuel, drive, transmission, mileage, year,
-                            price, color.strip(), engine, power, legal, id)
+                             price, color.strip(), engine, power, legal, id)
     except:
         return render_template("error.html", error="Tapahtui virhe lisätessä autoa!")
     try:

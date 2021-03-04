@@ -1,4 +1,5 @@
 from flask import make_response
+from flask.templating import render_template
 from db import db
 import users
 
@@ -138,16 +139,21 @@ def update_info(info, car_id):
     db.session.execute(sql, {"info":info, "id":car_id})
 
 def show_ad_image(id):
-    sql = "SELECT i.data FROM images i, ad_images ai WHERE ai.ad_id=:id AND ai.image_id=i.id"
+    sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
     db.session.commit()
-    print(result.fetchone())
-    if result.fetchone() is None:
+    rows = result.rowcount
+    if rows < 1:
         return None
-    image = result.fetchone()[0]
-    response = make_response(bytes(image))
-    response.headers.set("Content-Type", "image/jpeg")
-    return response
+    image_id = result.fetchone()[0]
+    sql = "SELECT data FROM images WHERE id=:id"
+    result = db.session.execute(sql, {"id":image_id})
+    data = result.fetchone()[0]
+    db.session.commit()
+    if data:
+        response = make_response(bytes(data))
+        response.headers.set("Content-Type", "image/jpeg")
+        return response
 
 def add_image(name, data, ad_id):
     sql = "INSERT INTO images (name,data) VALUES (:name,:data) RETURNING id"
@@ -159,15 +165,16 @@ def add_image(name, data, ad_id):
     db.session.commit()
 
 def image_exists(id):
-    sql = "SELECT i.name FROM images i, ad_images ai WHERE ai.ad_id=:id AND ai.image_id=i.id"
+    sql = "SELECT image_id FROM ad_images WHERE ad_images.ad_id=:id"
     result = db.session.execute(sql, {"id":id})
-    print(result)
-    print(result.fetchone())
-    print(result.fetchall())
-    if result.fetchone()[0] == None:
-        return None
-    name = result.fetchone()[0]
-    sql = "SELECT id FROM images WHERE name=:name"
-    result = db.session.execute(sql, {"name":name})
+    db.session.commit()
+    rows = result.rowcount
+    if rows < 1:
+        return False
     image_id = result.fetchone()[0]
-    return image_id
+    sql = "SELECT data FROM images WHERE id=:id"
+    result = db.session.execute(sql, {"id":image_id})
+    data = result.fetchone()[0]
+    db.session.commit()
+    if data:
+        return True

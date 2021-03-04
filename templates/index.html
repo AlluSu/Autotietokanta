@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="/static/main.css">
+<link lang="fi" rel="stylesheet" href="/static/main.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
+    <head>
     {% extends "layout.html" %}
     {% block title %}Etusivu{% endblock %}
     {% block content %}
+</head>
 <div>
     <h1>Tervetuloa AutoNettiin!</h1>
 {% if session.user_id %}
@@ -43,7 +45,7 @@ Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">tästä</a>
 <form action="/sort" method="GET">
 <label for="options">Lajittele:</label>
 <select name="options" id="cars">
-    <option value="none"></option>
+    <option value="none">Oletus</option>
     <option value="brand">Merkki: (A-Z)</option>
     <option value="brand DESC">Merkki: (Z-A)</option>
     <option value="year">Vuosimalli: (Vanhin ensin)</option>
