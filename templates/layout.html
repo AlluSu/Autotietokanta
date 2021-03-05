@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <title>AutoNetti - {% block title%}{% endblock %}</title>
-{% with messages = get_flashed_messages() %}
+<div>
+    <h1 id="header">AutoNetti</h1>
+    <a href="/">Etusivu</a>
+    <hr>
+    {% with messages = get_flashed_messages() %}
 {% if messages %}
 <ul class=flashes>
     {% for message in messages %}
@@ -9,10 +13,6 @@
 </ul>
 {% endif %}
 {% endwith %}
-<div>
-    <h1 id="header">AutoNetti</h1>
-    <a href="/">Etusivu</a>
-    <hr>
     {% block content %}{% endblock %}
     <hr>
 </div>
