@@ -11,7 +11,7 @@ div {
 
 nav li {
     display: inline-block;
-    padding: 0 .5em;
+    padding: 1em;
 }
 
 #header, #index-header {
@@ -26,9 +26,13 @@ nav li {
 
 input {
     margin: 5px;
-    padding:5px;
+    padding: 5px;
 }
 
 #sort-bar {
     padding: 5px;
+}
+
+li {
+    padding: 0.5em;
 }

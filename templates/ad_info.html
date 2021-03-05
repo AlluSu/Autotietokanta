@@ -8,32 +8,64 @@
 <div>
 <h2>Ilmoituksen tiedot:</h2>
 <hr>
-{% for spec in specs %}
-<b>Merkki: </b>{{ spec[1] }} <br>
-<b>Malli: </b>{{ spec[2] }} <br>
-<b>Korimalli: </b>{{ spec[3] }} <br>
-<b>Käyttövoima: </b>{{ spec[4] }} <br>
-<b>Vetotapa: </b>{{ spec[5] }} <br>
-<b>Vaihteisto: </b>{{ spec[6] }} <br>
-<b>Mittarilukema (km): </b>{{ spec[7] }}<br>
-<b>Vuosimalli: </b>{{ spec[8] }} <br>
-<b>Hinta (€): </b>{{ spec[9] }} euroa<br>
-<b>Väri: </b>{{ spec[10] }} <br>
-<b>Moottorin tilavuus (cm³): </b>{{ spec[11] }} <br>
-<b>Teho (kW): </b>{{ spec[12] }} <br>
-<b>Tieliikennekelpoisuus: </b>
-{% if spec[13] == true %}
-Kyllä
-{% else %}
-Ei
-{% endif %}
-{% endfor %}
+<ul style="list-style-type:none">
+    {% for spec in specs %}
+    <li>
+        <b>Merkki: </b>{{ spec[1] }}
+    </li>
+    <li>
+        <b>Malli: </b>{{ spec[2] }}
+    </li>
+    <li>
+        <b>Korimalli: </b>{{ spec[3] }}
+    </li>
+    <li>
+        <b>Käyttövoima: </b>{{ spec[4] }}
+    </li>
+    <li>
+        <b>Vetotapa: </b>{{ spec[5] }}
+    </li>
+    <li>
+        <b>Vaihteisto: </b>{{ spec[6] }} 
+    </li>
+    <li>
+        <b>Mittarilukema: </b>{{ spec[7] }} kilometriä
+    </li>
+    <li>
+        <b>Vuosimalli: </b>{{ spec[8] }}
+    </li>
+    <li>
+        <b>Hinta: </b>{{ spec[9] }} euroa
+    </li>
+    <li>
+        <b>Väri: </b>{{ spec[10] }}
+    </li>
+    <li>
+        <b>Moottorin tilavuus: </b>{{ spec[11] }} cm³
+    </li>
+    <li>
+        <b>Teho: </b>{{ spec[12] }} kilowattia (kW)
+    </li>
+    <li>
+        <b>Tieliikennekelpoinen: </b>
+        {% if spec[13] == true %}
+        Kyllä
+        {% else %}
+        Ei
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
 <hr>
 <h3>Varusteet:</h3>
 {% if equipment %}
-{% for e in equipment %}
-{{ e[0] }} <br>
+<ul style="list-style-type:none">
+    {% for e in equipment %}
+<li>
+    {{ e[0] }}
+</li>
 {% endfor %}
+</ul>
 {% else %}
 Ei varusteita
 {% endif %}
@@ -57,13 +89,22 @@ Ei varusteita
 {% endif %}
 <hr>
 <h3>Ilmoittajan tiedot:</h3>
-{% for info in seller %}
-<b>Myyjä: </b>{{ info[0] }} {{ info[1] }}<br>
-<b>Puhelinnumero: </b>{{ info[2] }} <br>
-<b>Sähköposti: </b>{{ info[3] }} <br>
-<b>Paikkakunta: </b>{{ info[4] }}
-{% endfor %}
-<hr>
+<ul style="list-style-type:none">
+    {% for info in seller %}
+    <li>
+        <b>Myyjä: </b>{{ info[0] }} {{ info[1] }}
+    </li>
+    <li>
+        <b>Puhelinnumero: </b>{{ info[2] }}
+    </li>
+    <li>
+        <b>Sähköposti: </b>{{ info[3] }}
+    </li>
+    <li>
+        <b>Paikkakunta: </b>{{ info[4] }}
+    </li>
+    {% endfor %}
+</ul>
 {% if logged == id%}
 {% for i in info %}
 <form action="/update_car_info/{{ i[0] }}" method="POST">
