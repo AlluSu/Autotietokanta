@@ -13,9 +13,9 @@
     {% for i in active %}
 <li><b>Merkki: </b> {{ i[0] }} <br></li>
 <li><b>Malli: </b> {{ i[1] }} <br></li>
-<li><b>Mittarilukema: </b> {{ i[2] }} <br></li>
+<li><b>Mittarilukema: </b> {{ i[2] }} km<br></li>
 <li><b>Vuosimalli: </b> {{ i[3] }} <br></li>
-<li><b>Hinta: </b> {{ i[4] }} <br></li>
+<li><b>Hinta: </b> {{ i[4] }} €<br></li>
 <li><a href="/ad/{{ i[5] }}">Siirry ilmoitukseen</a> </li>
 <hr>
 {% endfor %}
@@ -32,9 +32,9 @@
     {% for i in unactive %}
 <li><b>Merkki: </b> {{ i[0] }}</li>
 <li><b>Malli: </b> {{ i[1] }}</li>
-<li><b>Mittarilukema: </b> {{ i[2] }}</li>
+<li><b>Mittarilukema (KM): </b> {{ i[2] }}</li>
 <li><b>Vuosimalli: </b> {{ i[3] }} </li>
-<li><b>Hinta: </b> {{ i[4] }} </li>
+<li><b>Hinta (€): </b> {{ i[4] }} </li>
 <li><b>Lisätiedot: </b> {{ i[6] }}</li>
 <hr>
 {% endfor %}
