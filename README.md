@@ -12,12 +12,13 @@ Sovelluksen päänäkymä näyttää seuraavalta:
 Aktiiviset ilmoitukset eli myytävät autot näkyvät allekkain heti etusivulla ja jokaisesta on linkki tarkempiin
 tietoihin. Jos käyttäjä ei ole kirjautuneena, tarjotaan mahdollisuus kirjautumiseen sekä käyttäjän luontiin. Ilmoituksia on mahdollista lajitella valitsemalla lajitteluoptio valikosta ja painamalla painiketta *Lajittele*. Ilmoituksista voi myös hakea hakusanalla kirjoittamalla haluttu hakusana ja painamalla *Etsi*. Haku ei ole ns. *case sensitive* eli isot ja pienet kirjaimet ovat samanarvoisia.  
 ![querytest](photos/query_test.png)  
-Ylemmässä on haettu aktiivista ilmoituksista hakusanan *jdm* sisältäviä ilmotuksia, joita on 2 kappaletta.  
+Ylemmässä on haettu aktiivista ilmoituksista hakusanan *jdm* sisältäviä ilmotuksia, joita on kaksi (2) kappaletta.  
 
 #### Käyttäjän luominen  
 Uuden käyttäjän luominen näyttää seuraavalta:  
 ![new_user](photos/new_user.png)  
-Käyttäjä voi syöttää tiedot lomakkeelle jonka perusteella luodaan käyttäjä. Kaikki kentät on pakollista täyttää ja omia tietojaan poislukien salasanaa ja käyttäjätunnusta on mahdollista muuttaa jälkeenpäin. Puhelinnumero ja sähköposti eivät sisällä validoinnin suhteen mitään *Regex*-tarkistimia niiden monimutkaisuuden ja virhealttiuden takia. Syötteiden tarkistus tehdään niin käyttöliittymän puolella HTML-tiedostossa kuin myös palvelinpuolella ja tarvittaessa annetaan asianmukainen virheilmoitus.  
+Käyttäjä voi syöttää tiedot lomakkeelle jonka perusteella luodaan käyttäjä. Kaikki kentät on pakollista täyttää ja omia tietojaan poislukien salasanaa ja käyttäjätunnusta on mahdollista muuttaa jälkeenpäin. Puhelinnumero ja sähköposti eivät sisällä validoinnin suhteen mitään *Regex*-tarkistimia niiden monimutkaisuuden ja virhealttiuden takia. Syötteiden tarkistus tehdään niin käyttöliittymän puolella HTML-tiedostossa kuin myös palvelinpuolella ja tarvittaessa annetaan asianmukainen virheilmoitus. 
+![new_user_success](photos/new_user_succesful.png) 
 
 #### Kirjautuminen  
 Kirjautumisnäkymä näyttää seuraavalta:  
