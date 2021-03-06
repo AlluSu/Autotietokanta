@@ -257,6 +257,7 @@ def update(id):
         return render_template("error.html", error="Teho ei ole sallitulla välillä!")
     legal = request.form["legal"]
     info = request.form["info"]
+    print(info)
     checked_equipment = request.form.getlist("varusteet")
     if len(info.strip()) > 5000:
         return render_template("error.html", error="Liikaa tekstiä tekstikentässä!")
