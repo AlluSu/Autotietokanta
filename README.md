@@ -64,7 +64,7 @@ Jos käyttäjä painaa omassa ilmoituksessaan *Muokkaa ilmoitusta*, avautuu sama
 Myöskään varuste-checkboxit eivät ole itsestään valittuna kun muokataan auton tietoja jolla on varusteita, mutta käyttäjän avuksi on laitettu informatiivinen teksti ja listaus viimeeksi valituista varusteista.  
 ![editing](photos/editing_own_ad1.png)  
 ![editing2](photos/edit2.png)  
-Valitettavasti tällä hetkellä ilmoitukseen ei ole mahdollista lisätä jälkeenpäin kuvaa ja jos ilmoitukseen on liitetty luomisvaiheessa kuva niin ei ole mahdollista poistaa tai muokata kuvaa poistamatta vanhaa ilmoitusta ja tekemällä uutta.  
+Valitettavasti tällä hetkellä ilmoitukseen ei ole mahdollista lisätä jälkeenpäin kuvaa ja jos ilmoitukseen on liitetty luomisvaiheessa kuva niin ei ole mahdollista poistaa tai muokata kuvaa poistamatta vanhaa ilmoitusta ja tekemällä uutta. Lisäksi asettaessa tietokannasta tuleva data *Lisätiedot*-tekstikenttään tulee mukana useita välilyöntejä. Tämä ei ole vaarallista, vaan on vain jokin mystinen bugi.
 
 ### Ilmoituksen poisto  
 Ilmoitus poistetaan painamalla painiketta *Poista ilmoitus*, jonka jälkeen käyttäjä ohjataan etusivulle.  
