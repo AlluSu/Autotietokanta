@@ -1,5 +1,38 @@
 # Autotietokanta (Tietokantasovellusten harjoitustyö)  
 
+## Kurssin jälkeen  
+
+### Ohjaajan antama palaute  
+Grade 5  
+Feedback  
+Kuvaus sovelluksesta (README.md) antaa hyvän yleiskuvan.  
+
+Tietokannan suunnittelu ok (schema.sql). Nimeämiskäytänteet kunnossa. Käytetty tietotyyppejä fiksusti. Viiteavaimia (REFERENCES) käytetty kunnolla.  
+
+Sovellus toimii Herokussa; eikä outoja virheilmoituksia.  
+
+Navigointi sivulla toimii sujuvasti ja sovellusta on helppo ja mukava käyttää.  
+
+Syötteitä tarkastetaan ennen tietokantakutsuja. Jos virheitä ilmenee, niin virheilmoitukset ovat kuvaavia ja niitä tulee virheellistä tietoa syötettäessä.  
+
+Sovelluksen käyttöliittymä ja ulkoasu ovat viimeisteltyjä.  
+
+Koodia on siistiä. Ei erityisiä koodihajuja.  
+
+Koodin tyyli on yhdenmukainen kaikissa sovelluksen osissa, hyvä!  
+
+Itse SQL-kyselyt toteutettu fiksusti; ei turhia hakuja (n+1).  
+
+Versionhallintaa käytetty oikein ja sujuvasti, lyhyitä committeja, kuvaavia tekstejä eikä salaista tietoa (.env).  
+
+Käyttäjien oikeuksia sovelletaan oikein, eli he pääsevät näkemään vain tietoja, joihin heillä on oikeus.  
+
+Sovelluksessa ei ole SQL-injektion mahdollisuutta eikä XSS- ja CSRF-haavoittuvuuksia.  
+
+Salasanat tallennetaan tietokantaan hashättynä (check_password_hash).  
+
+Kaikenkaikkiaan sovellus on hyvä ja toimiva, koodi on siistiä ja suunnittelu oli järkevää.  
+
 ## Loppupalautus (vaihe 4)  
 
 Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa kirjautuneet käyttäjät voivat tehdä omista autoistaan myynti-ilmoituksia. Sovellus löytyy osoitteesta https://autonetti.herokuapp.com/  
@@ -64,7 +97,7 @@ Jos käyttäjä painaa omassa ilmoituksessaan *Muokkaa ilmoitusta*, avautuu sama
 Myöskään varuste-checkboxit eivät ole itsestään valittuna kun muokataan auton tietoja jolla on varusteita, mutta käyttäjän avuksi on laitettu informatiivinen teksti ja listaus viimeeksi valituista varusteista.  
 ![editing](photos/editing_own_ad1.png)  
 ![editing2](photos/edit2.png)  
-Valitettavasti tällä hetkellä ilmoitukseen ei ole mahdollista lisätä jälkeenpäin kuvaa ja jos ilmoitukseen on liitetty luomisvaiheessa kuva niin ei ole mahdollista poistaa tai muokata kuvaa poistamatta vanhaa ilmoitusta ja tekemällä uutta. Lisäksi asettaessa tietokannasta tuleva data *Lisätiedot*-tekstikenttään tulee mukana useita välilyöntejä. Tämä ei ole vaarallista, vaan on vain jokin mystinen bugi.
+Valitettavasti tällä hetkellä ilmoitukseen ei ole mahdollista lisätä jälkeenpäin kuvaa ja jos ilmoitukseen on liitetty luomisvaiheessa kuva niin ei ole mahdollista poistaa tai muokata kuvaa poistamatta vanhaa ilmoitusta ja tekemällä uutta. Lisäksi asettaessa tietokannasta tuleva data *Lisätiedot*-tekstikenttään tulee mukana useita välilyöntejä. Tämä ei ole vaarallista, vaan on vain jokin mystinen bugi.  
 
 ### Ilmoituksen poisto  
 Ilmoitus poistetaan painamalla painiketta *Poista ilmoitus*, jonka jälkeen käyttäjä ohjataan etusivulle.  
