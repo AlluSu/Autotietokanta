@@ -35,9 +35,13 @@ Kaikenkaikkiaan sovellus on hyvä ja toimiva, koodi on siistiä ja suunnittelu o
 
 ## Loppupalautus (vaihe 4)  
 
-Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa kirjautuneet käyttäjät voivat tehdä omista autoistaan myynti-ilmoituksia. Sovellus löytyy osoitteesta https://autonetti.herokuapp.com/  
+Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa kirjautuneet käyttäjät voivat tehdä omista autoistaan myynti-ilmoituksia. Sovellus löytyy osoitteesta https://autonetti.fly.dev/  
 
 ### Sovelluksen käyttäminen  
+
+#### Testi käyttäjät:  
+Admin käyttäjä; admin_user:adminuser
+Tavallinen käyttäjä; mestari:mestari
 
 #### Päänäkymä
 Sovelluksen päänäkymä näyttää seuraavalta:  
@@ -71,7 +75,7 @@ Kirjautuneena oleva käyttäjä voi siis:
 
 Jos käyttäjä on admin-käyttäjä, näkyy etusivulla status-teksti.  
 ![admin](photos/admin_index.png)  
-Sovelluksessa on siis kahdenlaisia käyttäjiä, tavallisia ja *Admin*-oikeuksin varustettuja käyttäjiä. *Admin*-käyttäjä on kuin tavallinen käyttäjä, mutta se voi poistaa jokaisen ilmoituksen. Sovelluksen tuotantoversiossa eli Herokussa olevassa sovelluksessa on tällä hetkellä yksi (1) *Admin*-käyttäjä, jolle on annettu oikeudet suoraan tietokannan kautta.  
+Sovelluksessa on siis kahdenlaisia käyttäjiä, tavallisia ja *Admin*-oikeuksin varustettuja käyttäjiä. *Admin*-käyttäjä on kuin tavallinen käyttäjä, mutta se voi poistaa jokaisen ilmoituksen. Sovelluksen tuotantoversiossa eli Fly.io:ssa olevassa sovelluksessa on tällä hetkellä yksi (1) *Admin*-käyttäjä, jolle on annettu oikeudet suoraan tietokannan kautta.  
 
 #### Ilmoituksen luonti  
 Kirjautunut käyttäjä voi luoda omia ilmoituksia painamalla *Jätä ilmoitus*-painiketta, jolloin avautuu seuraavanlainen näkymä:  
