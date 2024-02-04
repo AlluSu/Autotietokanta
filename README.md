@@ -35,7 +35,9 @@ Kaikenkaikkiaan sovellus on hyvä ja toimiva, koodi on siistiä ja suunnittelu o
 
 ## Loppupalautus (vaihe 4)  
 
-Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa kirjautuneet käyttäjät voivat tehdä omista autoistaan myynti-ilmoituksia. Sovellus löytyy osoitteesta https://autonetti.fly.dev/  
+Autotietokanta, tuttavallisemmin AutoNetti, on internet-sovellus, jossa kirjautuneet käyttäjät voivat tehdä omista autoistaan myynti-ilmoituksia.  
+Tällä hetkellä sovellus ei pyöri julkisessa internetissä monien ilmaisten hostauspalveluiden lopetettua.  
+At the moment the app is nowhere in the public internet, as many of the previously free hosting services don't offer their services for free anymore.  
 
 ### Sovelluksen käyttäminen  
 
